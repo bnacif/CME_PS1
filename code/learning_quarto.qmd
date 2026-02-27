@@ -32,3 +32,26 @@ altura = 10
 area = altura * largura
 println("The area is $area")
 ```
+
+
+::: {.callout-tip}
+This is a note.
+:::
+
+H~2~0
+
+
+
+## Problem 1
+
+**(a)** State and prove the result.
+
+::: {.callout-note}
+Here is the solution.
+
+We start by noting that...
+:::
+
+::: {.callout-important}
+**Solution**
+:::
