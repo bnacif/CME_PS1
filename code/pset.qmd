@@ -11,8 +11,53 @@ February, 2026
 
 
 ```{julia}
+# Loading data
+
 using XLSX, DataFrames
 
 df = DataFrame(XLSX.readtable("data/raw/Mega-Sena.xlsx", "MEGA SENA")) 
 
+```
+
+
+```{julia}
+# Data cleaning
+
+using Dates
+
+formato = DateFormat("dd/mm/yyyy")
+
+df[!, :"Data do Sorteio"] = parse.(Date, df[!, :"Data do Sorteio"], formato)
+# nomes de colunas com espaços sao escritos :"Nome da Coluna" (com o : e entre aspas) para serem tratados como Symbols.
+# . é um broadcasting, "aplique a função 'Date' em cada linha da coluna de uma vez"
+# ! says 'This function modifies its argument in place, nao cria outro df ou coluna'
+# now '2026-02-26'
+
+
+rename!(
+   df, names(df) .=>
+   Symbol.(lowercase.(replace.(names(df), " " => "_")))
+)
+
+#=
+ "data"   # String
+ :data    # Symbol
+ Symbols are faster for column names, immutable and used as identifiers
+=#
+
+rename!(df,
+   :arrecadação_total => :arrec,
+   :estimativa_prêmio => :premio,
+   :acumulado_sorteio_especial_mega_da_virada => :acum_mv)
+
+
+df.premio = parse.(Float64,
+    replace.(
+        replace.(
+            replace.(df.premio, "R\$" => ""),
+        "." => ""),
+    "," => ".")
+)
+
+# consider making functions for this
 ```
