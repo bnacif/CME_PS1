@@ -1,0 +1,34 @@
+---
+title: "Quarto Basics"
+format:
+  html:
+    # table of contents
+    toc: true
+execute:
+  # makes code chunks invisible in the output
+  # code output is still visible though
+  echo: false
+  # hides warnings in the output
+  warning: false
+# native julia engine
+engine: julia
+---
+
+# Title
+
+## Section Header
+
+Below is an executable code chunk.
+
+If this file were opened in an editor such as VSCode one could execute the `println("hello world")` Julia code and view the output, like in a notebook.
+
+```{julia}
+println("hello world")
+```
+
+```{julia}
+largura = 5
+altura = 10
+area = altura * largura
+println("The area is $area")
+```
