@@ -5,10 +5,7 @@ Breno Nacif
 February, 2026
 
 
-## Items
-### (a)
-**What is the relationship between the prize value announced and the revenue collected? What is the elasticity?**
-
+# Managing data 
 
 ```{julia}
 # Loading data
@@ -60,4 +57,94 @@ df.premio = parse.(Float64,
 )
 
 # consider making functions for this
+```
+
+Agora vamos começar os exercícios
+
+## Items
+### (a)
+**What is the relationship between the prize value announced and the revenue collected? What is the elasticity?**
+```{julia}
+# Item (a): Relationship between prize and revenue.
+using ShiftedArrays, GLM, StatsModels
+
+# 1. Limpando a coluna de arrecadação (repetindo sua lógica de limpeza)
+df.arrec = parse.(Float64, 
+    replace.(
+        replace.(
+            replace.(df.arrec, "R\$" => ""),
+         "." => ""),
+    "," => ".")
+)
+
+# 2. Criando o lag do prêmio (anunciado no sorteio anterior)
+df[!, :prize_ann] = lag(df.premio) 
+
+# 3. Filtrando dados conforme o enunciado (desde Junho/2009 e arrecadação positiva)
+df_clean = filter(row -> 
+    row.data_do_sorteio >= Date(2009, 6, 1) && 
+    row.arrec > 0 && 
+    !ismissing(row.prize_ann) && 
+    row.prize_ann > 0, 
+    df
+)
+
+# 4. Criando variáveis em log para o cálculo da elasticidade 
+df_clean[!, :log_arrec] = log.(df_clean.arrec)
+df_clean[!, :log_prize] = log.(df_clean.prize_ann)
+
+# 5. Rodando a regressão OLS
+modelo = lm(@formula(log_arrec ~ log_prize), df_clean)
+
+# Exibindo o resultado
+println(modelo)
+
+```
+
+*Mostrar tabela de resultados da regressao.*
+
+Regression coefficient is 0.4, i.e., the prize elasticity of the revenue collected is 0.4. This means that a 1% increase in the announced prize implies an increase of 0.4% in the total revenue collected.
+
+### (b)
+**Estimating the number of players (single tickets)**
+
+*Escrever sobre a fonte detalhadamente*
+
+For each game $j$, we estimate the number of participants ($N_j$) using the formula:
+$$
+N_j = \frac{revenue}{price}
+$$
+Note that we assume that all individuals choose the simplest and cheapest option. This a fairly strong assumption given that players can choose among several options of entering the lottery game. Still, this gives us a rather good aproximation to start with. 
+```{julia}
+
+# Item (b): Estimating the number of players (single tickets)
+
+# 1. Definindo a função de preço histórico
+function get_ticket_price(data::Date)
+    if data < Date(2014, 5, 10)
+        return 2.00
+    elseif data < Date(2015, 5, 24)
+        return 2.50
+    elseif data < Date(2019, 11, 10)
+        return 3.50
+    elseif data < Date(2023, 4, 30)
+        return 4.50
+    elseif data < Date(2025, 7, 10)
+        return 5.00
+    else
+        return 6.00
+    end
+end
+
+# 2. Criando a coluna de preço no DataFrame original (df)
+# Usamos broadcast .() para aplicar a função em toda a coluna de datas
+df[!, :preco] = get_ticket_price.(df.data_do_sorteio)
+
+# 3. Calculando o número de tickets (N_j)
+# N_j = Arrecadação / Preço
+df[!, :n_tickets] = df.arrec ./ df.preco
+
+# 4. Visualizando os resultados para os sorteios recentes
+tail(select(df, :data_do_sorteio, :arrec, :preco, :n_tickets), 5)
+
 ```
