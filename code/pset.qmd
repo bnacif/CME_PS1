@@ -19,44 +19,45 @@ df = DataFrame(XLSX.readtable("data/raw/Mega-Sena.xlsx", "MEGA SENA"))
 
 ```{julia}
 # Data cleaning
-
 using Dates
 
-formato = DateFormat("dd/mm/yyyy")
-
-df[!, :"Data do Sorteio"] = parse.(Date, df[!, :"Data do Sorteio"], formato)
-# nomes de colunas com espaços sao escritos :"Nome da Coluna" (com o : e entre aspas) para serem tratados como Symbols.
-# . é um broadcasting, "aplique a função 'Date' em cada linha da coluna de uma vez"
-# ! says 'This function modifies its argument in place, nao cria outro df ou coluna'
-# now '2026-02-26'
-
-
+# 1. Padronização de nomes de colunas
 rename!(
    df, names(df) .=>
    Symbol.(lowercase.(replace.(names(df), " " => "_")))
 )
-
-#=
- "data"   # String
- :data    # Symbol
- Symbols are faster for column names, immutable and used as identifiers
-=#
 
 rename!(df,
    :arrecadação_total => :arrec,
    :estimativa_prêmio => :premio,
    :acumulado_sorteio_especial_mega_da_virada => :acum_mv)
 
+# 2. Conversão de Datas
+formato = DateFormat("dd/mm/yyyy")
+df[!, :data_do_sorteio] = Date.(df[!, :data_do_sorteio], formato)
 
-df.premio = parse.(Float64,
-    replace.(
-        replace.(
-            replace.(df.premio, "R\$" => ""),
-        "." => ""),
-    "," => ".")
-)
+# 3. Função robusta para limpeza de valores monetários
+function clean_currency(val)
+    if ismissing(val) || val == ""
+        return 0.0
+    elseif val isa Number  #isa: built-in function/operator to determine whether a value is  of a given type
+        return Float64(val)
+    else
+        # Remove "R$" e pontos de milhar, depois troca a vírgula decimal por ponto
+        s = replace(string(val), r"R\$|\." => "", "," => ".")
+        return parse(Float64, s)
+    end
+end
 
-# consider making functions for this
+# 4. Identificar todas as colunas que precisam de limpeza financeira
+# Com base no dataset, são as colunas de rateio, acumulados, arrecadação e prêmio
+colunas_financeiras = [:rateio_6_acertos, :rateio_5_acertos, :rateio_4_acertos, 
+                       :acumulado_6_acertos, :arrec, :premio, :acum_mv]
+
+# Aplicar a função em todas as colunas da lista de uma vez
+for col in colunas_financeiras
+    df[!, col] = clean_currency.(df[!, col])
+end
 ```
 
 Agora vamos começar os exercícios
@@ -65,22 +66,13 @@ Agora vamos começar os exercícios
 ### (a)
 **What is the relationship between the prize value announced and the revenue collected? What is the elasticity?**
 ```{julia}
-# Item (a): Relationship between prize and revenue.
+### (a)
 using ShiftedArrays, GLM, StatsModels
 
-# 1. Limpando a coluna de arrecadação (repetindo sua lógica de limpeza)
-df.arrec = parse.(Float64, 
-    replace.(
-        replace.(
-            replace.(df.arrec, "R\$" => ""),
-         "." => ""),
-    "," => ".")
-)
-
-# 2. Criando o lag do prêmio (anunciado no sorteio anterior)
+# Criando o lag do prêmio (anunciado no sorteio anterior)
 df[!, :prize_ann] = lag(df.premio) 
 
-# 3. Filtrando dados conforme o enunciado (desde Junho/2009 e arrecadação positiva)
+# Filtrar: Desde Junho/2009 e Arrecadação > 0
 df_clean = filter(row -> 
     row.data_do_sorteio >= Date(2009, 6, 1) && 
     row.arrec > 0 && 
@@ -89,16 +81,12 @@ df_clean = filter(row ->
     df
 )
 
-# 4. Criando variáveis em log para o cálculo da elasticidade 
+# Cálculo de log e regressão
 df_clean[!, :log_arrec] = log.(df_clean.arrec)
 df_clean[!, :log_prize] = log.(df_clean.prize_ann)
 
-# 5. Rodando a regressão OLS
 modelo = lm(@formula(log_arrec ~ log_prize), df_clean)
-
-# Exibindo o resultado
 println(modelo)
-
 ```
 
 *Mostrar tabela de resultados da regressao.*
@@ -136,15 +124,60 @@ function get_ticket_price(data::Date)
     end
 end
 
-# 2. Criando a coluna de preço no DataFrame original (df)
-# Usamos broadcast .() para aplicar a função em toda a coluna de datas
-df[!, :preco] = get_ticket_price.(df.data_do_sorteio)
+### (b)
+# A função get_ticket_price permanece a mesma
+df_clean[!, :preco] = get_ticket_price.(df_clean.data_do_sorteio)
 
-# 3. Calculando o número de tickets (N_j)
 # N_j = Arrecadação / Preço
-df[!, :n_tickets] = df.arrec ./ df.preco
+df_clean[!, :n_tickets] = df_clean.arrec ./ df_clean.preco
 
 # 4. Visualizando os resultados para os sorteios recentes
-tail(select(df, :data_do_sorteio, :arrec, :preco, :n_tickets), 5)
-
+last(select(df_clean, :data_do_sorteio, :arrec, :preco, :n_tickets), 5)
 ```
+
+### (c)
+**Now we want to compute your expected prize for each draw.**
+
+*descrever formula e explicar lógica*
+
+$$
+\mathbb{E}[Y_j] = \frac{G6_j}{N_j}Y^{6}_{j} + \frac{G5_j}{N_j}Y^{5}_{j} + \frac{G4_j}{N_j}Y^{4}_{j}
+$$
+
+where $G\theta_j$ is the number of individuals who won one of the prizes, depending on the number $\theta \in \{4,5,6\}$ of numbers they got right, and $Y_j^{\theta}$ is the corresponding prize paid to each winner.
+
+```{julia}
+### (c) Calculating Expected Prize E[Yj]
+
+using Statistics
+# Calculando os componentes da fórmula: Probabilidade * Valor do Prêmio
+# G6/Nj * Y6 + G5/Nj * Y5 + G4/Nj * Y4
+df_clean[!, :total_prize] = (
+    (df_clean.ganhadores_6_acertos .* df_clean.rateio_6_acertos) .+ 
+    (df_clean.ganhadores_5_acertos .* df_clean.rateio_5_acertos) .+ 
+    (df_clean.ganhadores_4_acertos .* df_clean.rateio_4_acertos)
+)
+
+# Dividimos o total pago pelo número de bilhetes Nj calculado no item (b) [cite: 56]
+df_clean[!, :expected_prize] = df_clean.total_prize ./ df_clean.n_tickets
+
+# Visualizando o prêmio esperado médio
+println("Média do prêmio esperado por real apostado: ", mean(df_clean.expected_prize))
+```
+
+
+### (d) Return of buying a ticket
+
+```{julia}
+
+# 3. Return Ratio: E[Yj] / pj (item d)
+df_clean[!, :return_ratio] = df_clean.expected_prize ./ df_clean.preco
+println("Média do retorno esperado (amostra limpa): ", mean(df_clean.return_ratio))
+
+# Verificando se em algum sorteio o retorno foi maior que 1 (lucrativo)
+#sorteios_lucrativos = filter(row -> row.return_ratio > 1, df_clean)
+#println("Número de sorteios com retorno esperado > 1: ", nrow(sorteios_lucrativos))
+```
+
+
+### (e)
