@@ -74,7 +74,7 @@ df[!, :prize_ann] = lag(df.premio)
 
 # Filtrar: Desde Junho/2009 e Arrecadação > 0
 df_clean = filter(row -> 
-    row.data_do_sorteio >= Date(2009, 6, 1) && 
+    row.data_do_sorteio >= Date(2009, 6, 1) && # missing data before
     row.arrec > 0 && 
     !ismissing(row.prize_ann) && 
     row.prize_ann > 0, 
@@ -109,7 +109,7 @@ Note that we assume that all individuals choose the simplest and cheapest option
 
 # 1. Definindo a função de preço histórico
 function get_ticket_price(data::Date)
-    if data < Date(2014, 5, 10)
+    if data < Date(2014, 5, 11)
         return 2.00
     elseif data < Date(2015, 5, 24)
         return 2.50
