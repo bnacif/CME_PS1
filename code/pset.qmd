@@ -4,6 +4,25 @@ Breno Nacif
 
 February, 2026
 
+*Descrever ações* 
+
+```{julia}
+#| output: FALSE
+
+using Pkg
+Pkg.activate("@__DIR__")
+cd(joinpath(@__DIR__, ".."))
+
+Pkg.add([
+    "XLSX",
+    "DataFrames",
+    "Dates",
+    "ShiftedArrays",
+    "GLM",
+    "StatsModels",
+    "Statistics"
+])
+```
 
 # Managing data 
 
@@ -12,7 +31,7 @@ February, 2026
 
 using XLSX, DataFrames
 
-df = DataFrame(XLSX.readtable("data/raw/Mega-Sena.xlsx", "MEGA SENA")) 
+df = DataFrame(XLSX.readtable("data/raw/Mega-Sena.xlsx", "MEGA SENA"));
 
 ```
 

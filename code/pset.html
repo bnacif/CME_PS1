@@ -20,10 +20,45 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
-<script src="pset_files/libs/clipboard/clipboard.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2" crossorigin="anonymous"></script><script src="pset_files/libs/clipboard/clipboard.min.js"></script>
 <script src="pset_files/libs/quarto-html/quarto.js" type="module"></script>
 <script src="pset_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="pset_files/libs/quarto-html/axe/axe-check.js" type="module"></script>
@@ -35,7 +70,39 @@ ul.task-list li input[type="checkbox"] {
 <script src="pset_files/libs/bootstrap/bootstrap.min.js"></script>
 <link href="pset_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="pset_files/libs/bootstrap/bootstrap-9e3ffae467580fdb927a41352e75a2e0.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="https://cdn.jsdelivr.net/npm/requirejs@2.3.6/require.min.js" integrity="sha384-c9c+LnTbwQ3aujuU7ULEPVvgLs+Fn6fJUvIGTsuu1ZcCf11fiEubah0ttpca4ntM sha384-6V1/AdqZRWk1KAlWbKBlGhN7VG4iE/yAZcO6NZPMF8od0vukrvr0tg4qY6NSrItx" crossorigin="anonymous"></script>
 
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 </head>
 
@@ -45,21 +112,944 @@ ul.task-list li input[type="checkbox"] {
 
 <main class="content" id="quarto-document-content">
 
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Computational Methods in Economics</h1>
+</div>
 
 
 
-<section id="computational-methods-in-economics" class="level1">
-<h1>Computational Methods in Economics</h1>
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
 <section id="problem-set-1" class="level3">
 <h3 class="anchored" data-anchor-id="problem-set-1">Problem Set 1</h3>
 <p>Breno Nacif</p>
 <p>February, 2026</p>
+<p>teste</p>
+<div id="e3570093" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Pkg</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="bu">Pkg</span>.<span class="fu">activate</span>(<span class="st">"@__DIR__"</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cd</span>(<span class="fu">joinpath</span>(<span class="pp">@__DIR__</span>, <span class="st">".."</span>))</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="bu">Pkg</span>.<span class="fu">add</span>([</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"XLSX"</span>,</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"DataFrames"</span>,</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Dates"</span>,</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">"ShiftedArrays"</span>,</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">"GLM"</span>,</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    <span class="st">"StatsModels"</span>,</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Statistics"</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
 </section>
+<section id="managing-data" class="level1">
+<h1>Managing data</h1>
+<div id="9eaf7ef1" class="cell" data-execution_count="2">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Loading data</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co">#| output: FALSE</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">XLSX</span>, <span class="bu">DataFrames</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> <span class="fu">DataFrame</span>(XLSX.<span class="fu">readtable</span>(<span class="st">"data/raw/Mega-Sena.xlsx"</span>, <span class="st">"MEGA SENA"</span>)) </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="3">
+<div><div style="float: left;"><span>2977×20 DataFrame</span></div><div style="float: right; font-style: italic;"><span>2952 rows omitted</span></div><div style="clear: both;"></div></div><div class="data-frame" style="overflow-x: scroll;">
+<table class="data-frame caption-top table table-sm table-striped small">
+<thead>
+<tr class="columnLabelRow header">
+<th class="stubheadLabel" data-quarto-table-cell-role="th" style="text-align: right; font-weight: bold;">Row</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Concurso</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Data do Sorteio</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Bola1</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Bola2</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Bola3</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Bola4</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Bola5</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Bola6</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Ganhadores 6 acertos</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Cidade / UF</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Rateio 6 acertos</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Ganhadores 5 acertos</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Rateio 5 acertos</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Ganhadores 4 acertos</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Rateio 4 acertos</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Acumulado 6 acertos</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Arrecadação Total</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Estimativa prêmio</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Acumulado Sorteio Especial Mega da Virada</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Observação</th>
+</tr>
+<tr class="columnLabelRow even">
+<th class="stubheadLabel" data-quarto-table-cell-role="th" style="text-align: right; font-weight: bold;"></th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Any">Any</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Any">Any</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Any">Any</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Any">Any</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Any">Any</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Any">Any</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Any">Any</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Any">Any</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Any">Any</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Any">Any</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Any">Any</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Any">Any</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Any">Any</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Any">Any</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Any">Any</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Any">Any</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Any">Any</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Any">Any</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Any">Any</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Any">Any</th>
+</tr>
+</thead>
+<tbody>
+<tr class="dataRow odd">
+<td class="rowLabel" style="text-align: right; font-weight: bold;">1</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">11/03/1996</td>
+<td style="text-align: left;">4</td>
+<td style="text-align: left;">5</td>
+<td style="text-align: left;">30</td>
+<td style="text-align: left;">33</td>
+<td style="text-align: left;">41</td>
+<td style="text-align: left;">52</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left; font-style: italic;">missing</td>
+<td style="text-align: left;">R$0,00</td>
+<td style="text-align: left;">17</td>
+<td style="text-align: left;">R$39.158,92</td>
+<td style="text-align: left;">2016</td>
+<td style="text-align: left;">R$330,21</td>
+<td style="text-align: left;">R$1.714.650,23</td>
+<td style="text-align: left;">R$0,00</td>
+<td style="text-align: left;">R$0,00</td>
+<td style="text-align: left;">R$0,00</td>
+<td style="text-align: left; font-style: italic;">missing</td>
+</tr>
+<tr class="dataRow even">
+<td class="rowLabel" style="text-align: right; font-weight: bold;">2</td>
+<td style="text-align: left;">2</td>
+<td style="text-align: left;">18/03/1996</td>
+<td style="text-align: left;">9</td>
+<td style="text-align: left;">37</td>
+<td style="text-align: left;">39</td>
+<td style="text-align: left;">41</td>
+<td style="text-align: left;">43</td>
+<td style="text-align: left;">49</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">PR</td>
+<td style="text-align: left;">R$2.307.162,23</td>
+<td style="text-align: left;">65</td>
+<td style="text-align: left;">R$14.424,02</td>
+<td style="text-align: left;">4488</td>
+<td style="text-align: left;">R$208,91</td>
+<td style="text-align: left;">R$0,00</td>
+<td style="text-align: left;">R$0,00</td>
+<td style="text-align: left;">R$0,00</td>
+<td style="text-align: left;">R$0,00</td>
+<td style="text-align: left; font-style: italic;">missing</td>
+</tr>
+<tr class="dataRow odd">
+<td class="rowLabel" style="text-align: right; font-weight: bold;">3</td>
+<td style="text-align: left;">3</td>
+<td style="text-align: left;">25/03/1996</td>
+<td style="text-align: left;">10</td>
+<td style="text-align: left;">11</td>
+<td style="text-align: left;">29</td>
+<td style="text-align: left;">30</td>
+<td style="text-align: left;">36</td>
+<td style="text-align: left;">47</td>
+<td style="text-align: left;">2</td>
+<td style="text-align: left;">RN; SP</td>
+<td style="text-align: left;">R$391.192,51</td>
+<td style="text-align: left;">62</td>
+<td style="text-align: left;">R$10.515,93</td>
+<td style="text-align: left;">4261</td>
+<td style="text-align: left;">R$153,01</td>
+<td style="text-align: left;">R$0,00</td>
+<td style="text-align: left;">R$0,00</td>
+<td style="text-align: left;">R$0,00</td>
+<td style="text-align: left;">R$0,00</td>
+<td style="text-align: left; font-style: italic;">missing</td>
+</tr>
+<tr class="dataRow even">
+<td class="rowLabel" style="text-align: right; font-weight: bold;">4</td>
+<td style="text-align: left;">4</td>
+<td style="text-align: left;">01/04/1996</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">5</td>
+<td style="text-align: left;">6</td>
+<td style="text-align: left;">27</td>
+<td style="text-align: left;">42</td>
+<td style="text-align: left;">59</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left; font-style: italic;">missing</td>
+<td style="text-align: left;">R$0,00</td>
+<td style="text-align: left;">39</td>
+<td style="text-align: left;">R$15.322,24</td>
+<td style="text-align: left;">3311</td>
+<td style="text-align: left;">R$180,48</td>
+<td style="text-align: left;">R$717.080,75</td>
+<td style="text-align: left;">R$0,00</td>
+<td style="text-align: left;">R$0,00</td>
+<td style="text-align: left;">R$0,00</td>
+<td style="text-align: left; font-style: italic;">missing</td>
+</tr>
+<tr class="dataRow odd">
+<td class="rowLabel" style="text-align: right; font-weight: bold;">5</td>
+<td style="text-align: left;">5</td>
+<td style="text-align: left;">08/04/1996</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">2</td>
+<td style="text-align: left;">6</td>
+<td style="text-align: left;">16</td>
+<td style="text-align: left;">19</td>
+<td style="text-align: left;">46</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left; font-style: italic;">missing</td>
+<td style="text-align: left;">R$0,00</td>
+<td style="text-align: left;">98</td>
+<td style="text-align: left;">R$5.318,10</td>
+<td style="text-align: left;">5399</td>
+<td style="text-align: left;">R$96,53</td>
+<td style="text-align: left;">R$1.342.488,85</td>
+<td style="text-align: left;">R$0,00</td>
+<td style="text-align: left;">R$0,00</td>
+<td style="text-align: left;">R$0,00</td>
+<td style="text-align: left; font-style: italic;">missing</td>
+</tr>
+<tr class="dataRow even">
+<td class="rowLabel" style="text-align: right; font-weight: bold;">6</td>
+<td style="text-align: left;">6</td>
+<td style="text-align: left;">15/04/1996</td>
+<td style="text-align: left;">7</td>
+<td style="text-align: left;">13</td>
+<td style="text-align: left;">19</td>
+<td style="text-align: left;">22</td>
+<td style="text-align: left;">40</td>
+<td style="text-align: left;">47</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left; font-style: italic;">missing</td>
+<td style="text-align: left;">R$0,00</td>
+<td style="text-align: left;">109</td>
+<td style="text-align: left;">R$7.214,66</td>
+<td style="text-align: left;">7147</td>
+<td style="text-align: left;">R$110,03</td>
+<td style="text-align: left;">R$2.286.166,33</td>
+<td style="text-align: left;">R$0,00</td>
+<td style="text-align: left;">R$0,00</td>
+<td style="text-align: left;">R$0,00</td>
+<td style="text-align: left; font-style: italic;">missing</td>
+</tr>
+<tr class="dataRow odd">
+<td class="rowLabel" style="text-align: right; font-weight: bold;">7</td>
+<td style="text-align: left;">7</td>
+<td style="text-align: left;">22/04/1996</td>
+<td style="text-align: left;">3</td>
+<td style="text-align: left;">5</td>
+<td style="text-align: left;">20</td>
+<td style="text-align: left;">21</td>
+<td style="text-align: left;">38</td>
+<td style="text-align: left;">56</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left; font-style: italic;">missing</td>
+<td style="text-align: left;">R$0,00</td>
+<td style="text-align: left;">100</td>
+<td style="text-align: left;">R$8.746,05</td>
+<td style="text-align: left;">5736</td>
+<td style="text-align: left;">R$152,48</td>
+<td style="text-align: left;">R$3.335.692,28</td>
+<td style="text-align: left;">R$0,00</td>
+<td style="text-align: left;">R$0,00</td>
+<td style="text-align: left;">R$0,00</td>
+<td style="text-align: left; font-style: italic;">missing</td>
+</tr>
+<tr class="dataRow even">
+<td class="rowLabel" style="text-align: right; font-weight: bold;">8</td>
+<td style="text-align: left;">8</td>
+<td style="text-align: left;">29/04/1996</td>
+<td style="text-align: left;">4</td>
+<td style="text-align: left;">17</td>
+<td style="text-align: left;">37</td>
+<td style="text-align: left;">38</td>
+<td style="text-align: left;">47</td>
+<td style="text-align: left;">53</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left; font-style: italic;">missing</td>
+<td style="text-align: left;">R$0,00</td>
+<td style="text-align: left;">60</td>
+<td style="text-align: left;">R$16.084,11</td>
+<td style="text-align: left;">5262</td>
+<td style="text-align: left;">R$183,40</td>
+<td style="text-align: left;">R$4.493.748,19</td>
+<td style="text-align: left;">R$0,00</td>
+<td style="text-align: left;">R$0,00</td>
+<td style="text-align: left;">R$0,00</td>
+<td style="text-align: left; font-style: italic;">missing</td>
+</tr>
+<tr class="dataRow odd">
+<td class="rowLabel" style="text-align: right; font-weight: bold;">9</td>
+<td style="text-align: left;">9</td>
+<td style="text-align: left;">06/05/1996</td>
+<td style="text-align: left;">8</td>
+<td style="text-align: left;">43</td>
+<td style="text-align: left;">54</td>
+<td style="text-align: left;">55</td>
+<td style="text-align: left;">56</td>
+<td style="text-align: left;">60</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left; font-style: italic;">missing</td>
+<td style="text-align: left;">R$0,00</td>
+<td style="text-align: left;">17</td>
+<td style="text-align: left;">R$60.043,79</td>
+<td style="text-align: left;">2175</td>
+<td style="text-align: left;">R$469,31</td>
+<td style="text-align: left;">R$5.718.641,49</td>
+<td style="text-align: left;">R$0,00</td>
+<td style="text-align: left;">R$0,00</td>
+<td style="text-align: left;">R$0,00</td>
+<td style="text-align: left; font-style: italic;">missing</td>
+</tr>
+<tr class="dataRow even">
+<td class="rowLabel" style="text-align: right; font-weight: bold;">10</td>
+<td style="text-align: left;">10</td>
+<td style="text-align: left;">13/05/1996</td>
+<td style="text-align: left;">4</td>
+<td style="text-align: left;">18</td>
+<td style="text-align: left;">21</td>
+<td style="text-align: left;">25</td>
+<td style="text-align: left;">38</td>
+<td style="text-align: left;">57</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left; font-style: italic;">missing</td>
+<td style="text-align: left;">R$0,00</td>
+<td style="text-align: left;">251</td>
+<td style="text-align: left;">R$6.638,45</td>
+<td style="text-align: left;">12590</td>
+<td style="text-align: left;">R$132,35</td>
+<td style="text-align: left;">R$13.334.769,81</td>
+<td style="text-align: left;">R$0,00</td>
+<td style="text-align: left;">R$0,00</td>
+<td style="text-align: left;">R$0,00</td>
+<td style="text-align: left; font-style: italic;">missing</td>
+</tr>
+<tr class="dataRow odd">
+<td class="rowLabel" style="text-align: right; font-weight: bold;">11</td>
+<td style="text-align: left;">11</td>
+<td style="text-align: left;">20/05/1996</td>
+<td style="text-align: left;">15</td>
+<td style="text-align: left;">25</td>
+<td style="text-align: left;">37</td>
+<td style="text-align: left;">38</td>
+<td style="text-align: left;">58</td>
+<td style="text-align: left;">59</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">RJ</td>
+<td style="text-align: left;">R$15.591.365,07</td>
+<td style="text-align: left;">148</td>
+<td style="text-align: left;">R$12.706,05</td>
+<td style="text-align: left;">9442</td>
+<td style="text-align: left;">R$199,16</td>
+<td style="text-align: left;">R$0,00</td>
+<td style="text-align: left;">R$0,00</td>
+<td style="text-align: left;">R$0,00</td>
+<td style="text-align: left;">R$0,00</td>
+<td style="text-align: left; font-style: italic;">missing</td>
+</tr>
+<tr class="dataRow even">
+<td class="rowLabel" style="text-align: right; font-weight: bold;">12</td>
+<td style="text-align: left;">12</td>
+<td style="text-align: left;">27/05/1996</td>
+<td style="text-align: left;">4</td>
+<td style="text-align: left;">16</td>
+<td style="text-align: left;">19</td>
+<td style="text-align: left;">20</td>
+<td style="text-align: left;">27</td>
+<td style="text-align: left;">43</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left; font-style: italic;">missing</td>
+<td style="text-align: left;">R$0,00</td>
+<td style="text-align: left;">108</td>
+<td style="text-align: left;">R$6.791,17</td>
+<td style="text-align: left;">6454</td>
+<td style="text-align: left;">R$113,64</td>
+<td style="text-align: left;">R$880.136,24</td>
+<td style="text-align: left;">R$0,00</td>
+<td style="text-align: left;">R$0,00</td>
+<td style="text-align: left;">R$0,00</td>
+<td style="text-align: left; font-style: italic;">missing</td>
+</tr>
+<tr class="dataRow odd">
+<td class="rowLabel" style="text-align: right; font-weight: bold;">13</td>
+<td style="text-align: left;">13</td>
+<td style="text-align: left;">03/06/1996</td>
+<td style="text-align: left;">18</td>
+<td style="text-align: left;">32</td>
+<td style="text-align: left;">47</td>
+<td style="text-align: left;">50</td>
+<td style="text-align: left;">54</td>
+<td style="text-align: left;">56</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left; font-style: italic;">missing</td>
+<td style="text-align: left;">R$0,00</td>
+<td style="text-align: left;">43</td>
+<td style="text-align: left;">R$20.543,98</td>
+<td style="text-align: left;">2934</td>
+<td style="text-align: left;">R$301,09</td>
+<td style="text-align: left;">R$1.940.205,35</td>
+<td style="text-align: left;">R$0,00</td>
+<td style="text-align: left;">R$0,00</td>
+<td style="text-align: left;">R$0,00</td>
+<td style="text-align: left; font-style: italic;">missing</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">⋮</td>
+<td style="text-align: left;">⋮</td>
+<td style="text-align: left;">⋮</td>
+<td style="text-align: left;">⋮</td>
+<td style="text-align: left;">⋮</td>
+<td style="text-align: left;">⋮</td>
+<td style="text-align: left;">⋮</td>
+<td style="text-align: left;">⋮</td>
+<td style="text-align: left;">⋮</td>
+<td style="text-align: left;">⋮</td>
+<td style="text-align: left;">⋮</td>
+<td style="text-align: left;">⋮</td>
+<td style="text-align: left;">⋮</td>
+<td style="text-align: left;">⋮</td>
+<td style="text-align: left;">⋮</td>
+<td style="text-align: left;">⋮</td>
+<td style="text-align: left;">⋮</td>
+<td style="text-align: left;">⋮</td>
+<td style="text-align: left;">⋮</td>
+<td style="text-align: left;">⋮</td>
+<td style="text-align: left;">⋮</td>
+</tr>
+<tr class="dataRow odd">
+<td class="rowLabel" style="text-align: right; font-weight: bold;">2966</td>
+<td style="text-align: left;">2966</td>
+<td style="text-align: left;">29/01/2026</td>
+<td style="text-align: left;">6</td>
+<td style="text-align: left;">7</td>
+<td style="text-align: left;">9</td>
+<td style="text-align: left;">43</td>
+<td style="text-align: left;">44</td>
+<td style="text-align: left;">53</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left; font-style: italic;">missing</td>
+<td style="text-align: left;">R$0,00</td>
+<td style="text-align: left;">68</td>
+<td style="text-align: left;">R$50.520,02</td>
+<td style="text-align: left;">5798</td>
+<td style="text-align: left;">R$976,66</td>
+<td style="text-align: left;">R$101.637.878,98</td>
+<td style="text-align: left;">R$86.209.686,00</td>
+<td style="text-align: left;">R$115.000.000,00</td>
+<td style="text-align: left;">R$18.170.153,38</td>
+<td style="text-align: left; font-style: italic;">missing</td>
+</tr>
+<tr class="dataRow even">
+<td class="rowLabel" style="text-align: right; font-weight: bold;">2967</td>
+<td style="text-align: left;">2967</td>
+<td style="text-align: left;">31/01/2026</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">6</td>
+<td style="text-align: left;">38</td>
+<td style="text-align: left;">47</td>
+<td style="text-align: left;">56</td>
+<td style="text-align: left;">60</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left; font-style: italic;">missing</td>
+<td style="text-align: left;">R$0,00</td>
+<td style="text-align: left;">72</td>
+<td style="text-align: left;">R$59.070,09</td>
+<td style="text-align: left;">6741</td>
+<td style="text-align: left;">R$1.039,98</td>
+<td style="text-align: left;">R$114.724.174,35</td>
+<td style="text-align: left;">R$106.729.320,00</td>
+<td style="text-align: left;">R$130.000.000,00</td>
+<td style="text-align: left;">R$21.441.727,24</td>
+<td style="text-align: left; font-style: italic;">missing</td>
+</tr>
+<tr class="dataRow odd">
+<td class="rowLabel" style="text-align: right; font-weight: bold;">2968</td>
+<td style="text-align: left;">2968</td>
+<td style="text-align: left;">03/02/2026</td>
+<td style="text-align: left;">10</td>
+<td style="text-align: left;">11</td>
+<td style="text-align: left;">22</td>
+<td style="text-align: left;">26</td>
+<td style="text-align: left;">36</td>
+<td style="text-align: left;">46</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left; font-style: italic;">missing</td>
+<td style="text-align: left;">R$0,00</td>
+<td style="text-align: left;">82</td>
+<td style="text-align: left;">R$52.559,29</td>
+<td style="text-align: left;">6705</td>
+<td style="text-align: left;">R$1.059,53</td>
+<td style="text-align: left;">R$127.985.286,73</td>
+<td style="text-align: left;">R$108.155.094,00</td>
+<td style="text-align: left;">R$144.000.000,00</td>
+<td style="text-align: left;">R$24.757.005,35</td>
+<td style="text-align: left; font-style: italic;">missing</td>
+</tr>
+<tr class="dataRow even">
+<td class="rowLabel" style="text-align: right; font-weight: bold;">2969</td>
+<td style="text-align: left;">2969</td>
+<td style="text-align: left;">05/02/2026</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">2</td>
+<td style="text-align: left;">5</td>
+<td style="text-align: left;">14</td>
+<td style="text-align: left;">18</td>
+<td style="text-align: left;">32</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">CANAL ELETRONICO</td>
+<td style="text-align: left;">R$141.844.705,71</td>
+<td style="text-align: left;">172</td>
+<td style="text-align: left;">R$26.187,86</td>
+<td style="text-align: left;">10322</td>
+<td style="text-align: left;">R$719,30</td>
+<td style="text-align: left;">R$33.130.825,77</td>
+<td style="text-align: left;">R$113.034.768,00</td>
+<td style="text-align: left;">R$40.000.000,00</td>
+<td style="text-align: left;">R$28.221.860,11</td>
+<td style="text-align: left; font-style: italic;">missing</td>
+</tr>
+<tr class="dataRow odd">
+<td class="rowLabel" style="text-align: right; font-weight: bold;">2970</td>
+<td style="text-align: left;">2970</td>
+<td style="text-align: left;">07/02/2026</td>
+<td style="text-align: left;">22</td>
+<td style="text-align: left;">32</td>
+<td style="text-align: left;">37</td>
+<td style="text-align: left;">41</td>
+<td style="text-align: left;">42</td>
+<td style="text-align: left;">59</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left; font-style: italic;">missing</td>
+<td style="text-align: left;">R$0,00</td>
+<td style="text-align: left;">22</td>
+<td style="text-align: left;">R$103.128,37</td>
+<td style="text-align: left;">2828</td>
+<td style="text-align: left;">R$1.322,42</td>
+<td style="text-align: left;">R$40.111.823,36</td>
+<td style="text-align: left;">R$56.935.680,00</td>
+<td style="text-align: left;">R$47.000.000,00</td>
+<td style="text-align: left;">R$29.967.109,53</td>
+<td style="text-align: left; font-style: italic;">missing</td>
+</tr>
+<tr class="dataRow even">
+<td class="rowLabel" style="text-align: right; font-weight: bold;">2971</td>
+<td style="text-align: left;">2971</td>
+<td style="text-align: left;">10/02/2026</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">27</td>
+<td style="text-align: left;">39</td>
+<td style="text-align: left;">40</td>
+<td style="text-align: left;">46</td>
+<td style="text-align: left;">56</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left; font-style: italic;">missing</td>
+<td style="text-align: left;">R$0,00</td>
+<td style="text-align: left;">33</td>
+<td style="text-align: left;">R$65.041,25</td>
+<td style="text-align: left;">2294</td>
+<td style="text-align: left;">R$1.542,26</td>
+<td style="text-align: left;">R$46.716.011,96</td>
+<td style="text-align: left;">R$53.862.498,00</td>
+<td style="text-align: left;">R$55.000.000,00</td>
+<td style="text-align: left;">R$31.618.156,69</td>
+<td style="text-align: left; font-style: italic;">missing</td>
+</tr>
+<tr class="dataRow odd">
+<td class="rowLabel" style="text-align: right; font-weight: bold;">2972</td>
+<td style="text-align: left;">2972</td>
+<td style="text-align: left;">12/02/2026</td>
+<td style="text-align: left;">9</td>
+<td style="text-align: left;">10</td>
+<td style="text-align: left;">15</td>
+<td style="text-align: left;">46</td>
+<td style="text-align: left;">49</td>
+<td style="text-align: left;">51</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left; font-style: italic;">missing</td>
+<td style="text-align: left;">R$0,00</td>
+<td style="text-align: left;">55</td>
+<td style="text-align: left;">R$41.264,65</td>
+<td style="text-align: left;">3582</td>
+<td style="text-align: left;">R$1.044,39</td>
+<td style="text-align: left;">R$53.699.259,97</td>
+<td style="text-align: left;">R$56.954.034,00</td>
+<td style="text-align: left;">R$62.000.000,00</td>
+<td style="text-align: left;">R$33.363.968,70</td>
+<td style="text-align: left; font-style: italic;">missing</td>
+</tr>
+<tr class="dataRow even">
+<td class="rowLabel" style="text-align: right; font-weight: bold;">2973</td>
+<td style="text-align: left;">2973</td>
+<td style="text-align: left;">14/02/2026</td>
+<td style="text-align: left;">16</td>
+<td style="text-align: left;">24</td>
+<td style="text-align: left;">27</td>
+<td style="text-align: left;">31</td>
+<td style="text-align: left;">45</td>
+<td style="text-align: left;">46</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left; font-style: italic;">missing</td>
+<td style="text-align: left;">R$0,00</td>
+<td style="text-align: left;">63</td>
+<td style="text-align: left;">R$43.862,01</td>
+<td style="text-align: left;">4259</td>
+<td style="text-align: left;">R$1.069,47</td>
+<td style="text-align: left;">R$62.201.742,02</td>
+<td style="text-align: left;">R$69.344.616,00</td>
+<td style="text-align: left;">R$72.000.000,00</td>
+<td style="text-align: left;">R$35.489.589,22</td>
+<td style="text-align: left; font-style: italic;">missing</td>
+</tr>
+<tr class="dataRow odd">
+<td class="rowLabel" style="text-align: right; font-weight: bold;">2974</td>
+<td style="text-align: left;">2974</td>
+<td style="text-align: left;">19/02/2026</td>
+<td style="text-align: left;">3</td>
+<td style="text-align: left;">10</td>
+<td style="text-align: left;">12</td>
+<td style="text-align: left;">19</td>
+<td style="text-align: left;">37</td>
+<td style="text-align: left;">40</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left; font-style: italic;">missing</td>
+<td style="text-align: left;">R$0,00</td>
+<td style="text-align: left;">108</td>
+<td style="text-align: left;">R$27.143,02</td>
+<td style="text-align: left;">7587</td>
+<td style="text-align: left;">R$636,88</td>
+<td style="text-align: left;">R$92.171.488,38</td>
+<td style="text-align: left;">R$73.564.038,00</td>
+<td style="text-align: left;">R$105.000.000,00</td>
+<td style="text-align: left;">R$37.744.547,69</td>
+<td style="text-align: left; font-style: italic;">missing</td>
+</tr>
+<tr class="dataRow even">
+<td class="rowLabel" style="text-align: right; font-weight: bold;">2975</td>
+<td style="text-align: left;">2975</td>
+<td style="text-align: left;">21/02/2026</td>
+<td style="text-align: left;">7</td>
+<td style="text-align: left;">10</td>
+<td style="text-align: left;">17</td>
+<td style="text-align: left;">35</td>
+<td style="text-align: left;">44</td>
+<td style="text-align: left;">46</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left; font-style: italic;">missing</td>
+<td style="text-align: left;">R$0,00</td>
+<td style="text-align: left;">106</td>
+<td style="text-align: left;">R$36.398,76</td>
+<td style="text-align: left;">7501</td>
+<td style="text-align: left;">R$847,85</td>
+<td style="text-align: left;">R$104.043.083,35</td>
+<td style="text-align: left;">R$96.822.456,00</td>
+<td style="text-align: left;">R$116.000.000,00</td>
+<td style="text-align: left;">R$40.712.446,44</td>
+<td style="text-align: left; font-style: italic;">missing</td>
+</tr>
+<tr class="dataRow odd">
+<td class="rowLabel" style="text-align: right; font-weight: bold;">2976</td>
+<td style="text-align: left;">2976</td>
+<td style="text-align: left;">24/02/2026</td>
+<td style="text-align: left;">7</td>
+<td style="text-align: left;">9</td>
+<td style="text-align: left;">10</td>
+<td style="text-align: left;">21</td>
+<td style="text-align: left;">28</td>
+<td style="text-align: left;">43</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left; font-style: italic;">missing</td>
+<td style="text-align: left;">R$0,00</td>
+<td style="text-align: left;">136</td>
+<td style="text-align: left;">R$27.292,50</td>
+<td style="text-align: left;">8973</td>
+<td style="text-align: left;">R$681,85</td>
+<td style="text-align: left;">R$115.463.944,59</td>
+<td style="text-align: left;">R$93.146.358,00</td>
+<td style="text-align: left;">R$130.000.000,00</td>
+<td style="text-align: left;">R$43.567.661,76</td>
+<td style="text-align: left; font-style: italic;">missing</td>
+</tr>
+<tr class="dataRow even">
+<td class="rowLabel" style="text-align: right; font-weight: bold;">2977</td>
+<td style="text-align: left;">2977</td>
+<td style="text-align: left;">26/02/2026</td>
+<td style="text-align: left;">8</td>
+<td style="text-align: left;">19</td>
+<td style="text-align: left;">27</td>
+<td style="text-align: left;">32</td>
+<td style="text-align: left;">38</td>
+<td style="text-align: left;">52</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left; font-style: italic;">missing</td>
+<td style="text-align: left;">R$0,00</td>
+<td style="text-align: left;">118</td>
+<td style="text-align: left;">R$33.510,78</td>
+<td style="text-align: left;">7699</td>
+<td style="text-align: left;">R$846,60</td>
+<td style="text-align: left;">R$127.630.932,47</td>
+<td style="text-align: left;">R$99.231.624,00</td>
+<td style="text-align: left;">R$145.000.000,00</td>
+<td style="text-align: left;">R$46.609.408,75</td>
+<td style="text-align: left; font-style: italic;">missing</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div id="ac949144" class="cell" data-execution_count="3">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Data cleaning</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Dates</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Padronização de nomes de colunas</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="fu">rename!</span>(</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>   df, <span class="fu">names</span>(df) <span class="op">.=&gt;</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>   <span class="fu">Symbol</span>.(<span class="fu">lowercase</span>.(<span class="fu">replace</span>.(<span class="fu">names</span>(df), <span class="st">" "</span> <span class="op">=&gt;</span> <span class="st">"_"</span>)))</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="fu">rename!</span>(df,</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>   <span class="op">:</span>arrecadação_total <span class="op">=&gt;</span> <span class="op">:</span>arrec,</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>   <span class="op">:</span>estimativa_prêmio <span class="op">=&gt;</span> <span class="op">:</span>premio,</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>   <span class="op">:</span>acumulado_sorteio_especial_mega_da_virada <span class="op">=&gt;</span> <span class="op">:</span>acum_mv)</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Conversão de Datas</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>formato <span class="op">=</span> <span class="fu">DateFormat</span>(<span class="st">"dd/mm/yyyy"</span>)</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>df[!, <span class="op">:</span>data_do_sorteio] <span class="op">=</span> <span class="fu">Date</span>.(df[!, <span class="op">:</span>data_do_sorteio], formato)</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Função robusta para limpeza de valores monetários</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">clean_currency</span>(val)</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="fu">ismissing</span>(val) <span class="op">||</span> val <span class="op">==</span> <span class="st">""</span></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="fl">0.0</span></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elseif</span> val isa <span class="dt">Number</span>  <span class="co">#isa: built-in function/operator to determine whether a value is  of a given type</span></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="fu">Float64</span>(val)</span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span></span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Remove "R$" e pontos de milhar, depois troca a vírgula decimal por ponto</span></span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>        s <span class="op">=</span> <span class="fu">replace</span>(<span class="fu">string</span>(val), <span class="st">r"R</span><span class="sc">\$</span><span class="ch">|</span><span class="sc">\.</span><span class="st">"</span> <span class="op">=&gt;</span> <span class="st">""</span>, <span class="st">","</span> <span class="op">=&gt;</span> <span class="st">"."</span>)</span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="fu">parse</span>(<span class="dt">Float64</span>, s)</span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>    <span class="cf">end</span></span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. Identificar todas as colunas que precisam de limpeza financeira</span></span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a><span class="co"># Com base no dataset, são as colunas de rateio, acumulados, arrecadação e prêmio</span></span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>colunas_financeiras <span class="op">=</span> [<span class="op">:</span>rateio_6_acertos, <span class="op">:</span>rateio_5_acertos, <span class="op">:</span>rateio_4_acertos, </span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>                       <span class="op">:</span>acumulado_6_acertos, <span class="op">:</span>arrec, <span class="op">:</span>premio, <span class="op">:</span>acum_mv]</span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a><span class="co"># Aplicar a função em todas as colunas da lista de uma vez</span></span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> col <span class="kw">in</span> colunas_financeiras</span>
+<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a>    df[!, col] <span class="op">=</span> <span class="fu">clean_currency</span>.(df[!, col])</span>
+<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Agora vamos começar os exercícios</p>
 <section id="items" class="level2">
 <h2 class="anchored" data-anchor-id="items">Items</h2>
 <section id="a" class="level3">
 <h3 class="anchored" data-anchor-id="a">(a)</h3>
 <p><strong>What is the relationship between the prize value announced and the revenue collected? What is the elasticity?</strong></p>
+<div id="0d9a6b60" class="cell" data-execution_count="4">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">### (a)</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">ShiftedArrays</span>, <span class="bu">GLM</span>, <span class="bu">StatsModels</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Criando o lag do prêmio (anunciado no sorteio anterior)</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>df[!, <span class="op">:</span>prize_ann] <span class="op">=</span> <span class="fu">lag</span>(df.premio) </span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Filtrar: Desde Junho/2009 e Arrecadação &gt; 0</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>df_clean <span class="op">=</span> <span class="fu">filter</span>(row <span class="op">-&gt;</span> </span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    row.data_do_sorteio <span class="op">&gt;=</span> <span class="fu">Date</span>(<span class="fl">2009</span>, <span class="fl">6</span>, <span class="fl">1</span>) <span class="op">&amp;&amp;</span> <span class="co"># missing data before</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    row.arrec <span class="op">&gt;</span> <span class="fl">0</span> <span class="op">&amp;&amp;</span> </span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    !<span class="fu">ismissing</span>(row.prize_ann) <span class="op">&amp;&amp;</span> </span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    row.prize_ann <span class="op">&gt;</span> <span class="fl">0</span>, </span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>    df</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Cálculo de log e regressão</span></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>df_clean[!, <span class="op">:</span>log_arrec] <span class="op">=</span> <span class="fu">log</span>.(df_clean.arrec)</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>df_clean[!, <span class="op">:</span>log_prize] <span class="op">=</span> <span class="fu">log</span>.(df_clean.prize_ann)</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>modelo <span class="op">=</span> <span class="fu">lm</span>(<span class="pp">@formula</span>(log_arrec <span class="op">~</span> log_prize), df_clean)</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a><span class="fu">println</span>(modelo)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>StatsModels.TableRegressionModel{LinearModel{GLM.LmResp{Vector{Float64}}, GLM.DensePredChol{Float64, LinearAlgebra.CholeskyPivoted{Float64, Matrix{Float64}, Vector{Int64}}}}, Matrix{Float64}}(LinearModel{GLM.LmResp{Vector{Float64}}, GLM.DensePredChol{Float64, LinearAlgebra.CholeskyPivoted{Float64, Matrix{Float64}, Vector{Int64}}}}:
+
+Coefficients:
+─────────────────────────────────────────────────────────────────
+        Coef.  Std. Error       t  Pr(&gt;|t|)  Lower 95%  Upper 95%
+─────────────────────────────────────────────────────────────────
+x1  10.9402    0.0974996   112.21    &lt;1e-99  10.749     11.1314
+x2   0.401451  0.00584697   68.66    &lt;1e-99   0.389984   0.412919
+─────────────────────────────────────────────────────────────────
+, ModelFrame{@NamedTuple{log_arrec::Vector{Float64}, log_prize::Vector{Float64}}, LinearModel}(log_arrec ~ 1 + log_prize, StatsModels.Schema with 2 entries:
+  log_arrec =&gt; log_arrec
+  log_prize =&gt; log_prize
+, (log_arrec = [16.777228303633425, 17.013934573062944, 17.231914145360268, 17.253985756964013, 17.458564917429786, 17.573753299119517, 17.924365356507188, 18.30575088505082, 16.82073613963562, 17.05968292034055, 17.126889590410105, 17.461556816761313, 17.664317958814735, 17.844931240363238, 18.074109039967688, 18.339354307025907, 17.382453834366782, 17.649235192228982, 17.74154775921256, 17.019570213464657, 16.89447508180387, 17.35510005290962, 17.46210090020074, 16.907610758528904, 16.981735377698993, 17.18255552890204, 17.382122147092343, 16.81999810451476, 16.884309726224586, 17.203123149453496, 17.24505753210404, 17.511678039768988, 16.784932531176334, 16.842074706553795, 16.925428381754497, 16.88004484479295, 17.03963140363069, 17.270186208550946, 16.597648169104044, 16.94554590132335, 16.950178867709397, 17.314470866561486, 17.355105589458756, 16.771607008218687, 16.70645337499735, 17.043798113220905, 17.307732159935306, 16.797908624809644, 16.85935886374991, 16.686410407204153, 16.6229819920513, 17.126372790475447, 17.34192878679787, 17.46251871723487, 17.43481992046034, 16.88595746247446, 17.203391129869964, 16.870970863282643, 16.489176884195118, 16.767594973002687, 16.42241711766159, 19.891653705753768, 15.540213850529254, 16.666328613939218, 16.89286733364891, 16.912991060718163, 17.17780985708896, 16.606970714270442, 16.853924663468195, 16.856660744606646, 17.063997766215877, 17.221331235703676, 17.379195825309015, 17.429162297862657, 17.55871000139995, 17.077480124579868, 17.940711753020498, 18.157726405425414, 18.445810977845735, 16.899565198784487, 17.198338516801893, 17.551006863933416, 16.932891807012414, 16.988996554961385, 17.178519003341616, 17.182981545023644, 17.455398697679428, 17.52975600765146, 17.497069180060812, 17.736734702780645, 17.956404680839356, 17.253947781893366, 16.93630067481081, 16.73538113787818, 17.151587275743314, 17.175605905898855, 17.23600769540588, 17.517208897957875, 17.65320493920452, 16.793892480932186, 17.0568395336015, 17.3173436710495, 17.52073391979579, 17.528091304204484, 17.707388323811355, 16.82397967248318, 17.19269191643116, 17.405279921749898, 16.859575748308902, 16.84571990754803, 17.066083247303705, 17.24148835324023, 16.715277377068396, 16.783406572846335, 16.927541922228333, 17.04598762740507, 17.312991584853442, 16.690498026650392, 16.920828717711593, 16.971771301364917, 17.124328727004936, 17.32760438371713, 16.763006334047134, 16.856254437347612, 17.038206835600118, 17.08414522054331, 17.404796557134055, 17.468526122483173, 17.644398837018837, 17.763528232302384, 17.976238656985302, 18.640620608939376, 18.99666919393695, 16.73023828642739, 17.151721104677904, 17.21013256918197, 17.785655592805718, 17.861354309150286, 18.05306482234619, 18.275304922202555, 18.49430975856709, 19.019347868060237, 17.07921534034331, 17.004098542106945, 17.386878920691633, 17.447044651353018, 17.488822210237586, 16.91175355592705, 17.161090854975182, 16.715389314132807, 17.143837058370384, 17.366646389025608, 17.533556212990092, 16.72299155890292, 17.01404464544256, 17.08683855745885, 17.390857978097266, 17.45275502774235, 17.63229608094558, 16.824442333538716, 17.092954114228856, 17.320474024855354, 17.46830951926803, 16.53721064077475, 17.412306246796337, 17.365271095417697, 19.973600671780872, 16.807195451916485, 17.053672876954842, 17.107976340840032, 17.26013434771547, 17.027101512481153, 17.22924060993682, 17.243917966235344, 17.29014041701826, 17.438744745390327, 17.716131850193268, 17.799974031748416, 17.975528840491485, 16.849206601202823, 17.10417009885277, 17.411857914826648, 17.578974388590495, 17.667749503205055, 16.959830494994883, 16.480406741938438, 17.389396918411766, 17.4683457008148, 17.590091677603425, 17.68004183389173, 17.799385724545182, 17.222080083785304, 17.50054643499029, 17.57270713529872, 17.73235157809679, 17.804184519420094, 18.114878746067202, 18.39206480567486, 16.45975057707, 17.106082253922327, 17.303236033186767, 17.586537303560796, 17.790990274584566, 16.976739727469088, 17.22549409474008, 17.238947268954032, 17.591884868006392, 17.659344954114182, 17.810030733330578, 17.98295634526409, 18.230212734737805, 17.48459574174711, 17.696544318555514, 17.723327650929793, 17.8638716685118, 17.987435660751125, 18.13026825396761, 16.924117395870812, 17.20789932410154, 17.273896704857624, 17.01097232054821, 17.409185471693846, 17.054523385591498, 16.89261533154897, 17.128739086220698, 17.17055600227416, 17.49149011502836, 17.570983981833194, 17.718601430399833, 16.504479599449898, 16.94899980877173, 17.383400779561395, 17.489398397279903, 17.643277572292682, 17.69843021981383, 17.86445027933827, 18.195781126656442, 17.080708437056117, 16.83810752246196, 17.052729985485346, 17.222339850601294, 17.605432729446928, 17.78835927557707, 17.051323339386173, 17.162950770285086, 17.34203259894773, 17.59219152682677, 17.780853263232892, 17.884797210049644, 17.93700662591886, 17.04954128499114, 17.618140661917085, 17.699276589005162, 17.12887608067897, 16.980789637537686, 17.162992978527477, 17.55416307399773, 17.169565177744385, 16.8141537905629, 17.231988856111286, 16.96808263526574, 17.392875488184817, 17.52378078987014, 17.683154416366833, 17.72724748247518, 17.892813838862757, 17.384396002769943, 17.603595006326955, 16.56221426010333, 16.994900245657355, 17.08147582540398, 20.12420393721734, 16.827776592475928, 17.13402999610027, 17.186647140738984, 17.07786272026563, 17.155953396870636, 17.367757014445903, 17.365613918594303, 17.547188643763437, 17.586594504487355, 17.865555105192204, 16.980358236354324, 17.211381847813705, 16.9173490690564, 17.115325648477775, 16.84957334086538, 17.541031391994323, 16.673688844814006, 17.139192496838103, 16.892003957990283, 17.40488266648365, 16.867597644779966, 17.167022895171044, 17.19299335860722, 17.002390407495838, 17.318263425330752, 17.02025743771838, 17.121858800193323, 16.809090817596466, 17.074687973165958, 17.50467217226728, 17.58023682157765, 16.638117142824196, 17.052818659862766, 17.29521081621451, 17.035466998756718, 17.03724389624945, 17.14193410480972, 17.373110767178336, 17.428678424050354, 17.341621404354598, 16.88334774889655, 17.140009887905553, 17.081045592415805, 17.02350289192086, 17.418310364530228, 17.477735413551557, 17.691148585737988, 17.842306170028813, 18.003015384517134, 17.437968332243145, 17.537339709217395, 17.086223329414388, 17.244593887115688, 17.457985694511944, 17.753404252509764, 17.193708126775096, 17.259800123316143, 17.47928751424636, 17.543875161419006, 17.87313293910064, 18.180899297290896, 17.232988817280255, 16.53364811023491, 17.063288503486437, 17.521381780845648, 17.74621045925145, 17.172576795349027, 17.015162950970232, 17.242758134350066, 17.53532170642342, 17.724952435145067, 17.021722614735936, 16.82620818983545, 16.965382225567552, 17.479840524245002, 16.930367633270446, 17.18558314986623, 17.224271662418637, 17.052441523378366, 17.481578394307355, 17.718539396868408, 17.776517423087377, 17.837189906755576, 17.037566839813024, 17.542745543377276, 17.64475081857671, 17.924436854727624, 18.046300874430543, 17.030134235253023, 17.71147446354554, 17.199812885240394, 17.354505867630873, 17.397513403287324, 17.477074980200175, 17.86226352744315, 17.012968815422195, 17.144547700178485, 17.250943619919372, 17.4180239540982, 17.653416126578524, 17.800043193162946, 17.43749778982477, 17.761053326196006, 17.888700667585958, 20.27783606045889, 16.31534604932188, 17.241184333721314, 17.375191163273843, 17.61656481763624, 17.42141772153087, 17.639532038185976, 17.698137584294468, 17.137777496490624, 17.233237766167665, 17.656145998342794, 17.789216599008952, 17.173013350933154, 16.475952456223737, 17.12305352828063, 17.52436914340448, 17.14501456792603, 17.220652682221907, 17.455418283927035, 17.51848313584089, 17.464742119696872, 17.05726529312216, 17.318513162714854, 17.346666682932703, 17.526136141706502, 17.748298707712593, 16.91129058943799, 17.149252813773813, 17.373147939816107, 17.434095919370005, 17.781659902915177, 17.90926791448151, 17.12116338569197, 17.19048846030142, 17.095903669634353, 17.32957979441178, 17.49794589327333, 17.70607770386061, 17.1221624340509, 16.987731158057237, 17.514653462221247, 17.645719941909586, 17.733442670181454, 17.897316337179536, 18.06617350598333, 17.561105119338983, 17.18827760043089, 17.072847345910283, 17.25417410163416, 17.270463343865774, 17.53182276947945, 17.565736302840723, 17.813266279910735, 17.988799594252857, 17.126688843982464, 17.513435180920574, 17.148112346356893, 17.233926708758542, 17.392808240029343, 17.401086989440326, 17.330622822133897, 16.990802076639817, 17.08693731406318, 16.6685399086966, 17.09243956957706, 17.485519427295433, 17.621997521219605, 17.07840135437182, 17.183300128109977, 17.369154539762853, 17.557617270151834, 17.776756776639708, 16.966603350623323, 16.893862830506073, 17.231126950905985, 17.443864866563842, 16.975486293155324, 17.224677762713394, 16.948097246782236, 17.224691982165503, 17.31572391116151, 17.542711426753034, 17.723961792205447, 16.81426176993446, 17.021224787785226, 17.567310725269937, 17.645488669347458, 17.82087741123255, 18.011704689679476, 18.051433556664236, 18.89578062770514, 17.204955887314174, 17.342694919604092, 16.987571885746938, 17.205683998660117, 17.608607990288633, 17.07940242442882, 17.166626331902638, 17.282842124515195, 17.471643809970487, 17.684588316366057, 17.866319446968436, 17.583793253798508, 17.897028442277012, 17.96673819427196, 20.44648279106826, 15.996233507040436, 16.914633368040757, 17.30271975054964, 17.211905559971875, 17.35418658160191, 17.59756764689672, 17.050965939258614, 17.284895357934154, 17.381522189526358, 17.74441085724644, 17.935041789572374, 18.1225665523394, 18.32261332445386, 18.536324443972376, 19.108818066102252, 17.280059068592852, 17.466316061141722, 17.24002249744428, 16.747153489484653, 17.929219121888647, 17.178542344307168, 17.4846662206744, 17.156563235964185, 17.432458416052764, 17.73580938412485, 17.977329764193467, 18.16079493756864, 18.359564796455235, 17.180221809424015, 17.87013782775801, 17.981821703583844, 16.931697938454757, 17.081502079196188, 17.215514360928026, 17.672380746409626, 17.081766944455072, 17.153112689024848, 17.422375403151356, 17.62610270539511, 17.7099552155516, 17.192460242629767, 17.444841553178186, 17.142727561896294, 17.428692931806893, 17.75487145463393, 17.95662936486596, 17.163435143457693, 17.351184926702235, 17.38376871016468, 17.64668390939192, 17.78857301680139, 17.984802213393817, 17.17808526094821, 17.37745155251515, 17.419162474918018, 17.80367908689924, 17.976024264260452, 17.266562140682385, 17.179413742881472, 17.70737611015296, 17.881138379977727, 17.307568233357124, 16.905864024025345, 17.37937879091684, 17.744504390807737, 18.012220166401903, 18.19223905727284, 17.20374942288228, 17.458816120155664, 17.812006182962875, 17.97815293350969, 18.207402990215517, 17.265831302247346, 17.34192519876319, 17.68413288233274, 17.899734074762303, 18.051764501539893, 18.251722597713925, 18.426891194122124, 17.793885423811098, 17.34588090015283, 17.436523225070072, 17.649222609533957, 17.698840578722642, 18.039789473088376, 18.263703694536268, 18.495942286202467, 17.204897469786953, 17.513227657294564, 17.973992232645262, 18.183989871929015, 18.39632273162708, 18.317863740822283, 18.811037256538953, 19.098835205787193, 17.305597856609975, 17.61123280986288, 17.36384191701599, 17.432408930334823, 17.858885282253073, 17.39787744417407, 17.495768200851916, 17.37014586550493, 17.482804716773188, 20.58551774940369, 16.873181883210776, 17.314562380053005, 17.28493659695389, 17.402613136947764, 17.732939674007607, 17.785764687783733, 17.93894836099658, 17.20771596606884, 17.498116311005944, 17.82790491383789, 17.284098873140067, 17.402302952257358, 17.266701110052306, 16.806523211613026, 17.587755385885472, 17.151719984175053, 17.234492600825373, 17.405153415227343, 17.296046861239105, 17.714640048118, 17.894941293208074, 17.197776702559484, 17.264672207281652, 17.38439769400366, 17.641549712862073, 17.797915975686895, 17.77870588796342, 18.035808098197357, 18.269153303754802, 17.69791668146428, 17.97719490941877, 17.035271690831678, 17.447751139723795, 17.55233178074765, 17.7379692714805, 16.744870095904005, 17.056829638246445, 17.201411205529052, 17.387450987331892, 17.79336619992633, 17.885168950283582, 17.20839464642897, 17.430410760485795, 17.65234383096236, 17.932816633662885, 17.99247027013743, 18.331407049852075, 18.544035066682866, 17.269701368798795, 17.803321064347706, 17.982833975961384, 17.235197761125605, 17.357361440966493, 17.612631404024125, 17.392496718103992, 17.701661745562756, 17.20869727307427, 17.37565509793723, 17.590403302603548, 17.868252256631123, 17.99280433065468, 18.16668404158849, 17.302469065933845, 16.91463007655758, 17.582927633831808, 17.214200832792216, 17.38129784068147, 17.24565428898482, 17.15017080035933, 17.628109911851748, 17.757803481663057, 17.928637521346456, 18.016530575931423, 17.247114828742557, 17.4652471018982, 17.883526545138864, 17.166007241548822, 17.390498684517738, 17.465509127176766, 17.816125874214013, 18.002269216446816, 18.22281795540503, 17.19449571457994, 17.457538941650725, 16.828365670406328, 17.62652953334476, 17.897966091605962, 18.15748147996979, 17.209436147450166, 17.699051389978013, 17.903147608374084, 17.897677034061424, 18.23171105723331, 17.92537841628334, 18.601301655468557, 18.924545209982444, 19.28613663001957, 19.510533883029126, 19.81078773400693, 18.29998896951404, 18.32460065384315, 18.3641520952981, 18.364421381139017, 18.39713921898137, 18.46789129452221, 18.507137144471038, 18.305226608676026, 17.33862040779861, 16.91299397371754, 20.245733315788506, 15.881795492300608, 17.224983006622242, 17.406269102120177, 16.963937501878, 17.414527788921884, 17.55045229228641, 17.084153136649633, 17.334198369514958, 17.326193520491902, 17.645894793522316, 17.201717576789623, 17.57909764814758, 17.031813074713348, 16.549589844033317, 17.58032879477507, 17.615201860932814, 17.74664771845185, 17.77201867410285, 17.137187345627822, 17.45646330752021, 17.699346206289928, 16.550371354788528, 16.973973993493136, 17.206711895228413, 17.537417258326933, 17.124997082813827, 17.204373009541765, 17.162914716000557, 17.357967079482457, 17.698490826466262, 17.834675210892755, 18.028308412651953, 18.15429197150565, 18.26939865577906, 18.452247906727866, 17.01798472806735, 17.20880734529399, 17.483298963874166, 17.09822764218954, 17.629197639638225, 17.123036286703456, 17.277226500916683, 17.50401846806428, 17.554732554018855, 17.828558618508193, 17.924089093163072, 17.02168404868959, 17.251338776420173, 17.468461441870623, 17.240407848267125, 16.983970976672477, 17.099172592042823, 17.29958858577124, 17.450906742497178, 17.565709110337107, 17.01945930629899, 16.929111507951816, 17.230584776079567, 17.317612683058865, 17.382803099283322, 17.11989978508463, 17.427590781350073, 17.536585747175707, 17.000495272481594, 17.49380695859829, 17.594061928982338, 17.73651656514748, 17.04571514934515, 17.101149658617157, 17.06057354631774, 17.413199076525935, 17.57938059461677, 17.704090612149948, 17.823460907257274, 18.03373260615515, 17.073425425638543, 17.141045500941033, 17.40027566407528, 16.912597456800377, 17.289380849236952, 17.570251462446393, 17.737583661545894, 17.389469262108555, 17.730095758166193, 17.963689098468144, 16.97141812684968, 17.263036409644904, 17.002556772857538, 17.314813949876164, 17.574157440185388, 17.625344779139116, 17.41226521106376, 17.64897114954316, 17.856810398207703, 18.231155933910077, 18.41726579464477, 16.990157926236098, 17.18393283947284, 16.97757111246501, 17.511134429776096, 17.024813549118296, 17.00921162102685, 17.40718601638608, 17.414715683487266, 17.43443671077616, 17.47466208353562, 17.139601617937593, 17.20407484370832, 17.3774087206268, 17.55856763778001, 17.71556698868501, 17.445584943245766, 17.73359157652034, 16.999153863052957, 20.416563115413776, 16.853663251875016, 17.15435211910823, 17.17823857480695, 17.3999531391755, 17.513871012516056, 17.62332117727045, 16.92789380441111, 17.163865937838498, 17.24148884100216, 17.60832463288098, 17.68573505056666, 17.816218700530374, 16.9871642007364, 17.19994549827812, 17.106826274513214, 17.398717142087293, 17.526218196841175, 17.180264176509198, 17.868221668051202, 18.111968479054518, 17.099699684999695, 17.161333169442088, 17.085413376765207, 17.1603375681407, 17.39809793765422, 17.505805771917128, 17.652973549083036, 17.765749550823966, 17.882123606685415, 18.069552538378794, 18.03458260207741, 18.34657046333444, 18.381038849714784, 18.71371130769035, 17.654698244149255, 17.777129402918284, 17.264788852336498, 16.55544097477394, 16.9680232006797, 17.398074776931846, 17.593867921756903, 17.68522203298085, 17.697063902244825, 17.848588077478485, 18.0209579968849, 17.171356396616986, 17.24124616631617, 17.127120957703138, 17.194661748421883, 17.406071793909344, 17.552916058038164, 17.002934641712066, 17.087358457279898, 17.31778036455048, 17.098497250039138, 17.49043950467625, 17.628389838936474, 17.82397991569008, 18.006310848145247, 18.192752734098125, 18.36990755639107, 18.630845546501476, 18.853320270227016, 17.10792379224623, 17.856050877760058, 17.53673231542446, 17.896809359763846, 17.186685269147983, 17.278266133372085, 17.694480789334115, 17.72590513822757, 17.849041891522287, 17.878183924244752, 18.02556009446436, 18.196705865931847, 16.980546817868756, 17.23062872760725, 17.46220659645299, 17.051230048480996, 17.475859600486686, 17.640866290828434, 17.808814215265976, 17.948623455391154, 18.026412130506674, 17.591388919198426, 17.098913141400867, 17.175461306348787, 16.54580318540874, 16.90057351059628, 17.203454009727427, 17.42254316229358, 17.588229219303194, 17.012784268229744, 16.978742120909253, 16.997248074368738, 17.307865357121855, 17.489659448094137, 17.600361348270475, 17.638448743760048, 17.843166903441336, 18.018329385590015, 18.08414395924797, 17.16486110609944, 17.25322655989984, 17.60438915874771, 17.696220795852664, 17.8096723619625, 17.4661551628014, 17.737306423052964, 20.60779591354447, 16.689643962320375, 17.17692514453469, 17.233545800525807, 17.469759345524935, 17.303531680958034, 17.467971355495113, 17.47457951166334, 17.592200548821268, 17.673137882629675, 17.94213845992975, 17.58725618770433, 17.91532509091503, 18.051128390943727, 17.773586718701353, 18.571965581172776, 17.096974778711232, 17.365443484037403, 17.43950407059718, 17.6395966054576, 17.799228661906405, 17.933785718940698, 17.984526242074846, 18.11662400881433, 17.041378520762066, 17.59664738909102, 17.624039693356025, 17.58267093410302, 17.794647876826907, 17.204309816205274, 17.584427196659572, 17.237957428210553, 16.777423371300575, 17.454515894393374, 17.079493372434317, 17.442892263103424, 17.360614123338163, 17.697445874514994, 17.282305181371502, 17.629456955552254, 17.93028078864621, 18.091521740333917, 17.1523133547962, 17.18938350432689, 17.33420355620413, 17.545096423919045, 16.98486578996494, 17.186065931929626, 17.390934052672204, 17.387090073774008, 17.614311336418528, 17.61082058502048, 17.623387288024166, 16.784869877319355, 17.14849351507103, 16.914722549584635, 17.345694030499992, 17.329700109985296, 17.574653466033283, 17.791341001729073, 17.95489620979455, 18.115242492799343, 18.319130537615, 17.111442863858517, 17.188076956827278, 17.680877751871016, 17.71307958613109, 17.167113569670192, 16.78152752253018, 17.063988155024585, 17.43562008448742, 17.578954804873494, 17.725177790737696, 17.751680085439073, 17.874117789671782, 17.40104363335077, 17.336031639701506, 17.528833008151118, 17.093742661818567, 16.664811795089722, 17.16736805188668, 17.380524058243818, 16.941944878441483, 17.05086476545453, 17.128148892886312, 17.513294028408467, 17.483787135417906, 17.44036042807683, 16.984776050417, 17.101337566158556, 16.988839200508437, 17.299601472142225, 16.941216437092425, 17.10281000966376, 17.240250378825785, 17.54762678467365, 17.685515259829767, 17.74594410453908, 17.709639047293646, 17.876582069238587, 18.218370599772726, 17.00800749928605, 17.324831958289938, 17.003544854849917, 17.308220371652535, 17.554852360700934, 17.741216483814274, 17.886683486154794, 17.549232059347627, 17.818897275216912, 20.602282096244206, 16.27923336451638, 17.177912258800777, 17.31680583696806, 17.5385857775521, 17.23032286776531, 17.480672474260384, 17.653789246646514, 17.793675838453908, 17.102169042308198, 17.419583162422477, 17.63312249426692, 17.047803154078423, 17.299294301773887, 17.348972455100874, 17.65955969754283, 17.68947728242476, 17.83413806697632, 17.526105612395767, 17.813462017566074, 18.120569339728828, 18.020687254200986, 17.200203267094135, 17.300792636674434, 17.536723928572346, 17.739680144088663, 17.160072894687435, 17.166232065445897, 17.42780589989544, 17.48386082289986, 17.781490291190096, 17.834571126020535, 17.951532660622828, 18.045364729848696, 18.061725903022488, 18.52092669097405, 18.82731876393039, 19.021957918020313, 19.080181142104323, 19.528669122721386, 19.9081521637639, 17.30247356320962, 17.44413789118719, 17.528975509175826, 17.242190126599752, 17.81548084894963, 17.983696152548173, 18.059807097787058, 18.207152962581567, 18.21749517551309, 18.40695366726464, 18.425490911524623, 17.106921198223723, 17.217878870485904, 17.460887239982533, 17.754830664283517, 17.211909194042317, 16.730503299869284, 17.171962093665798, 17.002653746324388, 17.49650382266856, 17.66824032301925, 17.03146744688089, 17.27339947227209, 17.35647953412892, 17.72244625495483, 17.354521797310383, 16.941606684657216, 17.123545703006275, 17.315557832097966, 17.656950002429515, 17.67290170218746, 17.790565628519715, 17.817954674791615, 17.93146968336619, 18.101425565510706, 18.31602963216366, 18.285147829618978, 18.65819130968273, 18.733040676446674, 17.67502849299553, 17.42841680337493, 16.992893788510425, 17.205665293413997, 17.152128315421916, 17.63010695753765, 17.679395192259747, 17.81078531350018, 17.642485011527853, 17.18985051969726, 17.14736663244281, 17.398828003899908, 17.579749482031765, 17.70431015549208, 17.9017074932357, 17.883240471667786, 17.139708223742442, 17.33472281507256, 17.32529697300773, 17.40106991335322, 17.754777348241994, 17.793621287020883, 17.9073083799948, 18.013072591163443, 17.26608935754234, 17.606419611388475, 17.779986981076632, 17.411225324059505, 17.66811984001746, 17.14764560144101, 20.751738711432267, 16.99744926987836, 17.200085753361606, 17.430527436735304, 17.454140712012578, 17.68574391334453, 17.354381441858266, 17.586137081885717, 17.74751049902543, 17.90438360370334, 18.19163404077136, 18.27461697672406, 18.46445067064768, 18.571731191593685, 18.722993928998875, 18.887819354197866, 19.03721104884445, 19.12888944816444, 17.215865835155967, 17.460654676335107, 18.060497331099523, 16.72158119113563, 17.111592393961004, 17.333961768610994, 17.380810025270918, 17.1207025282046, 16.272873077196152, 16.52436973175982, 16.786707179109, 16.742001107641556, 17.027496864509732, 17.033326961844185, 17.1791168139739, 17.314281873387024, 17.22622743510911, 17.51823130292304, 17.6574147010728, 17.64844149122174, 17.458653853432853, 17.797000594447955, 18.08988423885079, 18.2949434241904, 18.58751139634871, 17.03462439450545, 17.280152346814564, 17.62166111672027, 17.842587117400598, 17.913175975039053, 17.20797295044629, 17.293182334591737, 17.568045213516278, 17.715811649412142, 17.845167707965075, 17.8510885492488, 17.067971128330377, 17.461923893288564, 17.68780721842892, 17.715088453263707, 17.919485226505813, 17.500677730077996, 17.3513212155541, 17.492310915134453, 17.63588431718563, 17.149102640729502, 17.200737996205063, 17.608583932528383, 17.12430856431727, 17.391426668025964, 16.934022761875777, 17.245554255099837, 17.545283904013786, 17.74245784027482, 17.896506548096408, 17.93100544187554, 18.102150584288243, 18.345902099255778, 18.537311075500565, 16.974976384312416, 17.319206764550398, 16.860396643845405, 17.477562334044368, 17.741579831065582, 17.907142043118927, 18.100118122562105, 18.131116882044896, 18.456469816139887, 18.661374658707857, 17.299131671948118, 17.217306910207732, 17.248452216056233, 17.247158237571448, 17.58245315401142, 17.79268270119069, 17.943663037478494, 18.13273465665173, 17.472902673154675, 17.835468828536143, 17.875096425406408, 18.03248246985013, 18.00546589117228, 18.2497240814013, 17.168710576107497, 17.256928489314998, 17.338035618937464, 17.59281395654947, 17.28226770474181, 17.590923115338192, 17.78115535073489, 17.87706709486177, 18.064601129912475, 20.885145758647184, 15.986390646613737, 17.134684484066355, 17.38801619706632, 17.494610775837526, 17.54686204453682, 17.565549467316337, 17.76221382079808, 16.584268765641607, 16.936320000188353, 17.4749975678734, 17.709748207435545, 17.25682661487566, 17.36861977224744, 17.595004605305324, 17.48196075896872, 17.89746621868521, 17.912057667796567, 18.088467995816192, 17.080668948460165, 17.609581708486868, 17.663525429574623, 17.829917844454695, 17.851606774350994, 17.981470719314387, 17.490514072470646, 17.6681036033084, 17.05649746125097, 17.11615601082808, 16.87109204690247, 17.41307107540567, 17.631532907264173, 17.803335933528487, 18.01523927306484, 17.090165495874274, 17.54450043749321, 17.72103917040072, 17.598595570649444, 17.66119595286362, 17.044081988176547, 17.597925538570994, 17.76955639501911, 17.952842983518515, 17.976612194139694, 18.154494276665368, 18.480082434764, 18.772089829060885, 17.252443982593537, 17.46341257579001, 17.59701573969001, 18.014935686662085, 17.186851540107206, 17.445554477952037, 17.081658194888515, 17.159877554332176, 17.01235915494625, 17.36052161913923, 17.65254559646454, 17.87492503112673, 18.042279775603145, 18.270521587386554, 18.493235382808336, 17.16318389580857, 17.47860563372843, 17.514268409651173, 17.976915996572107, 18.055480988267988, 18.23908470990312, 17.896408037064727, 17.1060906312127, 17.614321303307737, 17.834283396501657, 18.03493175939904, 17.13945047456107, 17.431661968154664, 17.69358809006254, 17.913653820977885, 17.709177466366683, 18.018396449189478, 17.115303920038734, 17.73090816302074, 17.126472133384027, 17.450147187890646, 16.990207322166004, 17.28162156227963, 17.682351546523535, 17.901638178395974, 17.348768432257756, 17.19344555627045, 17.61823058643694, 17.116406770530123, 17.508275304544863, 17.731983676932824, 17.86592901602386, 18.09143902998567, 18.134250467676722, 18.50264097661459, 18.718350106970334, 17.355957968387475, 17.345034529484145, 17.941421372171135, 17.16188843546232, 17.41931362542307, 17.466456225479607, 17.69886025508538, 17.437950645478054, 17.66025744244562, 17.149207757096224, 17.330752930825103, 17.280617090877318, 21.13554536009909, 17.07823935050925, 17.358542992491866, 17.462205801099767, 17.233066554880345, 17.55079358059249, 17.786086035082032, 17.37337727355131, 17.670711084884584, 17.860739216719658, 17.59327427162787, 17.87157839933213, 17.1797014692273, 17.474887498877408, 17.488610683201877, 17.883580777945948, 17.59258222598043, 17.834919132245254, 18.101625334987013, 18.19635142739634, 18.600876355024283, 18.924036744414295, 19.111893857910683, 19.335435282485506, 19.53584486710471, 18.377817871381552, 18.55807768321538, 18.70239537282711, 18.879275558211337, 17.3963710909898, 18.202004374905208, 18.2823521545858, 18.285378979429606, 17.373136138223458, 17.58642358282191, 17.57730789063711, 17.86617733301929, 18.122949668979526, 18.338232916295144, 17.552326383298723, 17.901445407471403, 18.16613442803, 18.12555124815951, 18.348881543763113, 18.363918326401418, 18.834526317656433, 18.531220047011676, 17.3613093268882, 17.429477345090582, 17.652801859835627, 18.117188324039645, 18.161425240775216, 18.206984067570737, 18.303674833131243, 18.398563807707955, 17.372848880426854, 17.668889539521327, 17.98490176058176, 18.172840749259198, 17.468571766960032, 17.81449485162763, 17.418711895901254, 17.52779577263932, 17.76256566076042, 17.272000630754327, 17.930345452135963, 16.86420271886794, 17.25309970314929, 17.292012748856273, 17.50266548844174, 17.94581735719087, 17.21833341782066, 17.590448400743682, 17.613883080714196, 17.804964244230558, 17.994730386064298, 18.19719784756713, 18.17577162566084, 18.158024691919024, 18.087760753627, 18.516825470879894, 18.74246045785297, 19.066235696405872, 19.24820831882039, 19.544686969956853, 19.98670251246838, 17.50105909573065, 17.85104249477494, 17.88696774093136, 17.974083288481985, 17.99822541093432, 18.32182418166079, 18.61988445437248, 18.747135046792526, 18.917221506175316, 18.02403326602817, 18.21422233695351, 18.32745505259167, 17.634192424753543, 17.55335808899166, 18.088122156007728, 17.709696077141132, 17.813984433327317, 18.078722195004627, 18.149055704573353, 18.508525013990262, 18.51190668094397, 18.552346763474777, 18.585311067138896, 17.563586167062706, 21.395418845277383, 17.233838323186973, 17.65851616303321, 17.314077769621594, 17.606447852402983, 18.00242864968592, 18.133060909563756, 18.33005922368488, 18.322777453941995, 18.556201334934336, 18.732003773759928, 18.900028130890288, 18.990502705540806, 17.652989602363206, 17.326746396635304, 18.05415940440187, 17.44814948714344, 17.569072647830772, 17.40798960944689, 17.691948799357572, 18.199086254721728, 17.446602014798074, 17.789737755853565, 17.439612742442485, 17.712351263326696, 18.120901940177134, 18.267881862533795, 18.421825868047428, 18.474801589048017, 17.519492604139753, 18.028410324310606, 18.13133098167862, 17.398806471552188, 17.753565366671396, 17.78157886652776, 18.078064821482737, 18.262782528376547, 18.42891486037742, 17.24765283581195, 17.738919496938113, 17.733334107660472, 17.95756946777738, 17.40369277309129, 17.576634507966606, 17.84898337929687, 17.99405111409062, 18.18952858417134, 18.239261260168185, 18.4427361260077, 17.445411339631118, 17.975386897881293, 18.058222250343572, 18.255987393289914, 17.32859153367279, 17.59402765615743, 17.42542066564634, 17.704995069022566, 18.043202256253366, 17.402657905774387, 17.788079499760293, 17.977667962379204, 18.178904043735464, 18.18081763404763, 18.396519600107457, 18.210943056156452, 17.7876462424238, 18.06498467789917, 18.21827124876489, 18.449383888961513, 18.52210397366265, 18.89976018811028, 17.407516573521384, 17.593819068291378, 16.92562453363698, 17.210624137441176, 17.813221139544243, 17.58022159617336, 17.80235639425947, 18.068408095674858, 17.856565799976302, 18.488289765026536, 16.976808963574957, 17.15274543033995, 17.502469168438704, 17.33696140274398, 17.63972303079936, 17.9631800660384, 16.908681880036337, 17.129053628726354, 17.551723043716915, 17.542674710383164, 17.711700783813175, 17.37171097038512, 17.215171426461097, 17.87737385253312, 17.64966585535805, 17.77197763028147, 18.020653225322192, 17.904545884437294, 18.057875548357973, 18.46477375087374, 18.794718684844984, 17.45234130085625, 17.34878974043356, 17.501940765120143, 17.853980117715732, 17.74496485187407, 18.22774657204343, 17.832191372209618, 17.056089360181893, 17.705794063569083, 17.61400556222333, 17.687348241153348, 17.353440660859338, 17.24099477884501, 17.56160730612913, 17.774365239547038, 17.111946503743734, 17.23703134632615, 17.524679530627527, 21.609613825883226, 17.12146257438826, 17.334177889239456, 16.92363826898494, 17.07481079432707, 17.535269543714346, 17.428116504536685, 17.570510445395175, 17.821249199860684, 17.707451665103726, 17.915191937343657, 18.174025956947215, 18.15740747146224, 18.27301049569616, 18.49587327775642, 17.616711940775804, 17.73818721121665, 17.981074633088603, 17.987741042130335, 18.11478717767989, 18.111508945853977, 18.285021489033774, 18.575623053215487, 18.543710480459374, 18.606568019342394, 18.967473727143123, 19.09407401952918, 17.275195220131835, 17.56988510680335, 17.4601042130074, 17.884203752303662, 18.12112640758338, 18.017680595333825, 18.121964012976598, 18.33106321024823, 18.455369230913238, 17.624226049993656, 17.374279048824267, 17.450560345922817, 17.77581474090726, 17.8266551976399, 17.904691143111496, 18.091265706617243, 17.964685024224405, 18.02076660069205, 18.4408067993322, 17.008569783805946, 17.154432988014605, 17.285987547778273, 17.24264563044365, 18.03012993766315, 17.743921839006443, 17.818861825876162, 18.020312425118828, 17.003838924031054, 17.468049237916706, 17.87193870939417, 17.689348817439765, 17.726977608878347, 17.966368478800707, 18.01720286000567, 18.42147682699416, 18.242026155604, 18.37688271083568, 18.58231486712445, 17.60604784375443, 17.67649991950329, 17.935835521107474, 17.811015059342598, 17.84211450001964, 18.093028744423297, 18.054053872016333, 18.19729410059368, 18.447589387137068, 18.390169112413126, 18.650748030795384, 17.46694940359806, 17.56223418378803, 17.863012870099855, 17.586795464731704, 17.748972008870936, 17.965659358284835, 17.880405969432886, 17.925829268068078, 18.182464290039025, 18.231778642791802, 17.12040847063689, 17.500301289633263, 17.42939352993175, 17.547890855277192, 17.87763448256897, 17.76365852811902, 17.827692604807233, 18.032972053433415, 17.949310180878125, 17.524802747338317, 17.821211502725834, 17.07670460145098, 17.187877988375128, 17.58355949244589, 17.611096484030337, 17.933022993716943, 17.864222615359132, 17.870989370692705, 18.05364877933051, 18.11734444766792, 17.027905225432363, 17.35019895643586, 17.303742913559873, 17.389385783832807, 17.850026821845223, 17.777973318619036, 17.810310621627515, 18.10527640246573, 17.121348175259477, 17.88192741365135, 18.013405648805485, 18.147003083680616, 17.916126414448556, 17.914032964163244, 18.279981494942554, 18.311940244802777, 18.759718009500933, 18.753674473290307, 18.783471691951192, 19.15044956588745, 17.458165036248126, 17.639827072139568, 17.528518075096553, 17.998434212112965, 17.902142453893436, 17.892004830837596, 18.133758849158987, 18.04728376282351, 17.141357760355383, 17.769798100946986, 17.17520897990582, 17.290821411765027, 17.596275242524598, 17.517567432253102, 21.635667739114595, 17.38005477631445, 17.291811701531213, 17.42247553289951, 17.69476581699241, 17.718180963862288, 17.72801874567246, 17.283291243769582, 17.1700020019472, 17.3232187933916, 17.795794833991362, 17.0378681145639, 17.155106966333975, 17.563047877567328, 17.452737442632788, 17.706787851531757, 17.96524898738845, 17.88082290094233, 17.947768328286323, 18.209352614809866, 18.359718859019118, 18.52120503390034, 18.695846336053954, 18.647104748690715, 17.065546038945755, 17.854371039162725, 17.222469642425466, 17.534193808578056, 17.496865649931912, 17.10027018617203, 17.749080550760503, 17.03095991920506, 17.19274323288164, 17.552229367229117, 17.410976320303085, 17.645648334318373, 17.93466488038624, 17.853430789782415, 17.96325930590768, 18.209541106514877, 17.581647537036446, 17.672360225044585, 17.936010402391215, 17.826336454754063, 18.243567361044754, 17.77347768141193, 17.304824427977717, 17.239481964937227, 17.84563539267316, 17.6012351495956, 17.784644726116053, 18.04516375549577, 17.946192674618842, 18.046037765964524, 18.260545441944306, 18.519541522006758, 17.0716952696098, 17.288726540086312, 17.255459792882085, 17.37028931457327, 17.844159485406507, 17.815349641523223, 17.80448599338036, 18.097070861452696, 18.018839935129826, 18.217960031974844, 18.492647249803, 18.46120575037602, 18.825176449007852, 17.045186847269168, 17.540900083605827, 17.834775278484504, 17.839998750992564, 17.09939216978437, 17.50410597174257, 17.6147296363757, 17.63658185165203, 17.98598451930783, 17.920574363271545, 17.153562154847833, 17.74738595415626, 17.72134533574619, 17.722382961787808, 17.998092070853684, 17.909612590778494, 18.067309878387125, 18.33803651525558, 18.485716741328112, 17.242727086615016, 17.63929496094231, 17.801703267926374, 17.847942588119466, 18.07093405839417, 18.022830171543692, 17.138488635208972, 17.71934791217584, 17.64350483207136, 17.116807159119638, 17.533376951808428, 17.472108475056103, 17.62602641397364, 17.89796410141601, 17.877738870462082, 17.891397216344203, 17.353660548211852, 17.5422212025996, 17.635613255474585, 17.896996703948854, 17.79775158807261, 17.861741502108018, 18.249691477516993, 17.07363840318799, 17.274402154343893, 17.64131336424813, 17.565839282014192, 17.511941874845608, 17.790099602966652, 17.70199702379581, 17.804011376681665, 18.027818850627582, 18.07862434085483, 18.162599181610208, 18.425203879136014, 17.0582754726849, 17.184147350527383, 17.816133827432214, 17.771321063650756, 17.831545085567548, 18.090062527072828, 18.022889655092534, 18.598691522679232, 17.225998647035286, 17.77348553226475, 17.49416314549256, 17.046546231298848, 17.726473962213316, 17.114469212778026, 17.272551645171596, 17.62214931411962, 17.491096696171926, 17.629369358730948, 17.853066543830465, 17.783226590744516, 17.761607052286053, 18.010991386251753, 21.839204395148585, 17.416719436046446, 17.3051923311972, 17.55138728426262, 17.500425062042243, 17.599654599934148, 17.83018206085114, 17.819319941895127, 17.81772557679101, 18.053760813182226, 18.161386924839324, 18.272293095910598, 18.48580646765276, 18.49907681050238, 18.543206010768323, 17.8574327675998, 17.801945023774646, 17.85775507941382, 18.054599066527498, 18.113666850157887, 18.388389508813876, 18.349682556018852, 18.412967311774842], log_prize = [15.201804919084164, 16.300417207752275, 16.588099280204055, 16.811242831518264, 16.951004773893423, 17.14771506813948, 17.622173047734595, 17.822843743196746, 14.508657738524219, 15.201804919084164, 15.89495209964411, 17.111347423968603, 17.281246460764002, 17.45309671769066, 17.622173047734595, 17.840862248699423, 17.034386382832476, 17.182806387950748, 17.37085861945369, 14.508657738524219, 14.73180128983843, 16.64872390202049, 16.951004773893423, 14.508657738524219, 15.424948470398375, 15.89495209964411, 16.860032995687696, 14.508657738524219, 15.424948470398375, 15.761420707019587, 16.300417207752275, 16.99356438831222, 14.508657738524219, 14.508657738524219, 15.424948470398375, 14.508657738524219, 16.213405830762646, 16.454567887579532, 14.508657738524219, 15.201804919084164, 15.761420707019587, 16.70588231586044, 16.90655301132259, 14.508657738524219, 15.201804919084164, 15.60727002719233, 16.811242831518264, 14.73180128983843, 15.424948470398375, 14.508657738524219, 14.508657738524219, 16.300417207752275, 16.523560759066484, 16.811242831518264, 16.99356438831222, 14.73180128983843, 16.588099280204055, 14.508657738524219, 15.424948470398375, 15.60727002719233, 15.830413578506539, 18.60300230074632, 14.22097566607244, 14.508657738524219, 15.424948470398375, 15.761420707019587, 16.523560759066484, 14.508657738524219, 15.201804919084164, 15.761420707019587, 16.012735135300492, 16.811242831518264, 16.99356438831222, 17.14771506813948, 17.281246460764002, 17.341871082580436, 17.7667542765457, 17.926384422137584, 18.064005800013632, 14.73180128983843, 15.424948470398375, 17.216707939626428, 14.508657738524219, 15.424948470398375, 15.89495209964411, 16.300417207752275, 17.034386382832476, 17.216707939626428, 17.37085861945369, 17.47907220409392, 17.665658159674333, 16.759949537130716, 14.508657738524219, 15.424948470398375, 15.761420707019587, 16.11809565095832, 16.90655301132259, 17.073607095985757, 17.312018119430753, 14.508657738524219, 15.424948470398375, 16.811242831518264, 16.99356438831222, 17.182806387950748, 17.341871082580436, 14.73180128983843, 16.70588231586044, 16.90655301132259, 14.22097566607244, 15.424948470398375, 15.761420707019587, 16.811242831518264, 14.508657738524219, 15.201804919084164, 15.687312734865866, 16.012735135300492, 16.860032995687696, 14.508657738524219, 15.424948470398375, 15.761420707019587, 16.06680235657077, 16.90655301132259, 14.508657738524219, 15.424948470398375, 15.761420707019587, 16.11809565095832, 16.90655301132259, 17.111347423968603, 17.24949776244942, 17.4264284706085, 17.576710673657836, 18.064005800013632, 18.258161814454592, 14.508657738524219, 15.201804919084164, 15.89495209964411, 17.50439001207821, 17.64415195445337, 17.785802471516394, 17.926384422137584, 18.132998671500584, 18.560442686327523, 14.914122846632385, 15.60727002719233, 15.89495209964411, 16.38045991542581, 16.951004773893423, 14.508657738524219, 15.424948470398375, 14.28551418721001, 15.424948470398375, 16.70588231586044, 16.90655301132259, 14.508657738524219, 15.319587954740548, 15.89495209964411, 16.860032995687696, 17.034386382832476, 17.216707939626428, 14.508657738524219, 15.424948470398375, 16.811242831518264, 16.99356438831222, 17.073607095985757, 17.182806387950748, 17.341871082580436, 19.11382792451231, 14.508657738524219, 15.363073066680286, 15.89495209964411, 16.213405830762646, 16.012735135300492, 16.300417207752275, 16.64872390202049, 16.811242831518264, 16.99356438831222, 17.50439001207821, 17.64415195445337, 17.7667542765457, 14.73180128983843, 15.424948470398375, 16.951004773893423, 17.14771506813948, 17.312018119430753, 14.508657738524219, 15.424948470398375, 16.70588231586044, 16.951004773893423, 17.111347423968603, 17.312018119430753, 17.47907220409392, 16.64872390202049, 16.860032995687696, 17.111347423968603, 17.312018119430753, 17.45309671769066, 17.893048001869992, 18.064005800013632, 14.73180128983843, 15.201804919084164, 15.761420707019587, 17.14771506813948, 17.37085861945369, 14.508657738524219, 15.424948470398375, 16.012735135300492, 17.073607095985757, 17.281246460764002, 17.4264284706085, 17.576710673657836, 17.7667542765457, 16.951004773893423, 17.216707939626428, 17.37085861945369, 17.50439001207821, 17.72753356339242, 18.09217667698033, 14.73180128983843, 15.424948470398375, 16.012735135300492, 14.508657738524219, 16.70588231586044, 14.73180128983843, 14.508657738524219, 15.424948470398375, 16.012735135300492, 16.860032995687696, 17.111347423968603, 17.281246460764002, 14.508657738524219, 15.150511624696614, 16.70588231586044, 16.99356438831222, 17.182806387950748, 17.312018119430753, 17.47907220409392, 17.958645284355807, 14.73180128983843, 14.508657738524219, 15.363073066680286, 15.89495209964411, 17.034386382832476, 17.24949776244942, 14.508657738524219, 15.555976732804778, 16.012735135300492, 17.073607095985757, 17.281246460764002, 17.45309671769066, 17.64415195445337, 14.508657738524219, 16.951004773893423, 17.216707939626428, 14.508657738524219, 14.508657738524219, 15.424948470398375, 16.860032995687696, 14.73180128983843, 14.508657738524219, 15.424948470398375, 14.648419680899378, 16.588099280204055, 16.811242831518264, 17.034386382832476, 17.24949776244942, 17.4264284706085, 16.811242831518264, 16.99356438831222, 14.508657738524219, 15.201804919084164, 15.761420707019587, 18.951308995014536, 14.73180128983843, 15.363073066680286, 15.89495209964411, 14.508657738524219, 16.06680235657077, 16.41820024340866, 16.70588231586044, 16.883563493097892, 17.111347423968603, 17.622173047734595, 14.73180128983843, 15.424948470398375, 14.508657738524219, 15.424948470398375, 16.759949537130716, 16.90655301132259, 14.508657738524219, 15.150511624696614, 14.508657738524219, 16.489659207390805, 14.508657738524219, 15.424948470398375, 16.012735135300492, 14.508657738524219, 16.523560759066484, 14.508657738524219, 15.520258650202699, 14.508657738524219, 15.424948470398375, 16.64872390202049, 16.951004773893423, 14.508657738524219, 15.319587954740548, 15.830413578506539, 16.454567887579532, 14.508657738524219, 15.60727002719233, 16.012735135300492, 16.454567887579532, 16.38045991542581, 14.508657738524219, 15.424948470398375, 16.11809565095832, 14.508657738524219, 16.523560759066484, 16.811242831518264, 17.034386382832476, 17.24949776244942, 17.4264284706085, 16.811242831518264, 17.034386382832476, 14.508657738524219, 15.60727002719233, 16.11809565095832, 17.111347423968603, 14.73180128983843, 15.60727002719233, 16.213405830762646, 16.588099280204055, 17.312018119430753, 17.553180176247643, 14.914122846632385, 14.508657738524219, 15.201804919084164, 16.90655301132259, 17.14771506813948, 14.73180128983843, 14.508657738524219, 15.538277155705378, 16.90655301132259, 17.14771506813948, 14.73180128983843, 14.508657738524219, 14.508657738524219, 16.64872390202049, 14.508657738524219, 15.520258650202699, 16.012735135300492, 14.508657738524219, 16.588099280204055, 16.90655301132259, 17.14771506813948, 17.37085861945369, 14.508657738524219, 16.759949537130716, 17.034386382832476, 17.216707939626428, 17.45309671769066, 14.73180128983843, 17.034386382832476, 14.508657738524219, 15.717618084361195, 16.213405830762646, 16.523560759066484, 17.281246460764002, 14.73180128983843, 14.73180128983843, 15.60727002719233, 16.11809565095832, 17.111347423968603, 17.312018119430753, 17.50439001207821, 17.529082624668582, 17.686711568872166, 19.25358986688747, 14.73180128983843, 15.068273526459642, 15.830413578506539, 16.38045991542581, 16.38045991542581, 16.64872390202049, 16.951004773893423, 14.508657738524219, 15.60727002719233, 17.034386382832476, 17.216707939626428, 14.914122846632385, 14.22097566607244, 14.508657738524219, 16.759949537130716, 14.914122846632385, 15.687312734865866, 16.11809565095832, 16.523560759066484, 16.588099280204055, 14.914122846632385, 15.761420707019587, 16.11809565095832, 16.523560759066484, 17.281246460764002, 14.73180128983843, 15.464169183551656, 16.012735135300492, 16.38045991542581, 17.216707939626428, 17.4264284706085, 14.73180128983843, 15.687312734865866, 14.845129975145433, 16.64872390202049, 16.835935444108635, 17.034386382832476, 14.690979295318174, 14.73180128983843, 16.759949537130716, 16.99356438831222, 17.182806387950748, 17.356469882001587, 17.576710673657836, 16.90655301132259, 14.914122846632385, 14.914122846632385, 15.60727002719233, 16.11809565095832, 17.034386382832476, 17.19990082131005, 17.37085861945369, 17.553180176247643, 14.73180128983843, 16.90655301132259, 14.808762330974558, 15.687312734865866, 16.11809565095832, 16.489659207390805, 16.454567887579532, 14.73180128983843, 14.73180128983843, 15.60727002719233, 15.717618084361195, 16.860032995687696, 17.034386382832476, 14.73180128983843, 15.60727002719233, 16.06680235657077, 17.073607095985757, 17.281246460764002, 14.73180128983843, 15.464169183551656, 15.830413578506539, 16.523560759066484, 14.73180128983843, 15.520258650202699, 14.73180128983843, 15.464169183551656, 16.325109820342647, 16.64872390202049, 16.951004773893423, 14.73180128983843, 14.73180128983843, 16.67771143889374, 16.951004773893423, 17.182806387950748, 17.4264284706085, 17.622173047734595, 18.132998671500584, 14.845129975145433, 15.687312734865866, 14.73180128983843, 15.555976732804778, 16.951004773893423, 14.73180128983843, 14.914122846632385, 15.687312734865866, 16.213405830762646, 17.1296965626368, 17.312018119430753, 17.50439001207821, 17.599700191882537, 17.785802471516394, 19.11382792451231, 14.22097566607244, 14.914122846632385, 15.573368475516649, 14.73180128983843, 16.012735135300492, 16.523560759066484, 14.73180128983843, 15.60727002719233, 16.11809565095832, 17.111347423968603, 17.341871082580436, 17.529082624668582, 17.72753356339242, 17.942644943009366, 18.469470908121796, 14.914122846632385, 15.761420707019587, 14.73180128983843, 15.424948470398375, 17.312018119430753, 14.73180128983843, 15.761420707019587, 14.914122846632385, 15.687312734865866, 17.034386382832476, 17.312018119430753, 17.50439001207821, 17.72753356339242, 14.73180128983843, 17.216707939626428, 17.45309671769066, 14.508657738524219, 15.424948470398375, 14.914122846632385, 16.90655301132259, 14.508657738524219, 14.914122846632385, 15.761420707019587, 16.300417207752275, 16.70588231586044, 14.73180128983843, 15.761420707019587, 14.914122846632385, 15.761420707019587, 17.034386382832476, 17.281246460764002, 14.914122846632385, 15.761420707019587, 16.213405830762646, 17.216707939626428, 17.399029496420383, 17.576710673657836, 14.914122846632385, 15.761420707019587, 16.811242831518264, 17.034386382832476, 17.281246460764002, 14.914122846632385, 14.914122846632385, 16.90655301132259, 17.14771506813948, 14.914122846632385, 15.687312734865866, 16.11809565095832, 17.14771506813948, 17.37085861945369, 17.599700191882537, 14.914122846632385, 15.702580206996654, 17.312018119430753, 17.45309671769066, 17.64415195445337, 14.914122846632385, 15.761420707019587, 16.90655301132259, 17.216707939626428, 17.4264284706085, 17.622173047734595, 17.822843743196746, 17.216707939626428, 14.914122846632385, 15.89495209964411, 16.34123920227253, 16.733281290048552, 17.50439001207821, 17.72753356339242, 17.909855120186375, 14.914122846632385, 15.761420707019587, 17.4264284706085, 17.622173047734595, 17.822843743196746, 18.02020317735524, 18.197537192638155, 18.720785336402702, 14.73180128983843, 15.830413578506539, 14.914122846632385, 14.914122846632385, 17.341871082580436, 14.914122846632385, 15.89495209964411, 14.914122846632385, 15.89495209964411, 19.296149481306266, 14.914122846632385, 15.424948470398375, 14.914122846632385, 15.830413578506539, 16.811242831518264, 17.111347423968603, 17.341871082580436, 14.914122846632385, 15.830413578506539, 17.216707939626428, 14.914122846632385, 15.761420707019587, 14.914122846632385, 15.60727002719233, 16.523560759066484, 14.914122846632385, 14.914122846632385, 15.761420707019587, 14.914122846632385, 16.811242831518264, 17.073607095985757, 14.914122846632385, 14.914122846632385, 15.761420707019587, 16.759949537130716, 17.034386382832476, 17.281246460764002, 17.45309671769066, 17.64415195445337, 17.034386382832476, 17.312018119430753, 14.914122846632385, 15.60727002719233, 16.213405830762646, 17.312018119430753, 14.73180128983843, 14.508657738524219, 14.914122846632385, 15.761420707019587, 16.951004773893423, 17.216707939626428, 14.914122846632385, 15.687312734865866, 16.300417207752275, 17.312018119430753, 17.553180176247643, 17.72753356339242, 17.98989782785991, 14.914122846632385, 17.312018119430753, 17.50439001207821, 14.914122846632385, 15.732433170146335, 16.25785759333348, 17.312018119430753, 17.37085861945369, 14.914122846632385, 15.761420707019587, 16.213405830762646, 17.281246460764002, 17.43985149094064, 17.64415195445337, 14.914122846632385, 15.830413578506539, 17.111347423968603, 14.914122846632385, 15.761420707019587, 14.914122846632385, 14.914122846632385, 16.759949537130716, 17.034386382832476, 17.24949776244942, 17.47907220409392, 14.914122846632385, 17.111347423968603, 17.216707939626428, 14.914122846632385, 15.761420707019587, 16.25785759333348, 17.216707939626428, 17.466168799258014, 17.622173047734595, 14.914122846632385, 15.761420707019587, 17.24949776244942, 17.281246460764002, 17.50439001207821, 17.64415195445337, 14.914122846632385, 16.951004773893423, 17.216707939626428, 17.47907220409392, 17.599700191882537, 17.822843743196746, 18.197537192638155, 18.51599092375669, 18.683045008419857, 18.951308995014536, 19.11382792451231, 18.420680743952367, 18.469470908121796, 18.51599092375669, 18.643824295266576, 18.720785336402702, 18.980296531887788, 19.04661917481886, 19.08851011652802, 14.914122846632385, 15.60727002719233, 19.450300161133523, 14.22097566607244, 14.73180128983843, 15.830413578506539, 16.300417207752275, 16.759949537130716, 16.99356438831222, 14.914122846632385, 15.60727002719233, 16.11809565095832, 17.034386382832476, 17.216707939626428, 17.312018119430753, 14.914122846632385, 15.068273526459642, 16.70588231586044, 16.99356438831222, 17.216707939626428, 17.37085861945369, 14.914122846632385, 16.70588231586044, 16.99356438831222, 14.914122846632385, 15.068273526459642, 15.702580206996654, 16.860032995687696, 14.914122846632385, 15.687312734865866, 16.012735135300492, 16.38045991542581, 17.14771506813948, 17.341871082580436, 17.50439001207821, 17.72753356339242, 17.909855120186375, 18.31532022829454, 14.73180128983843, 15.60727002719233, 16.11809565095832, 16.454567887579532, 17.26549810379586, 14.914122846632385, 15.687312734865866, 16.11809565095832, 16.588099280204055, 17.312018119430753, 17.50439001207821, 14.73180128983843, 15.60727002719233, 16.11809565095832, 17.16541464523888, 14.603967918328545, 15.424948470398375, 16.012735135300492, 16.38045991542581, 17.111347423968603, 14.73180128983843, 14.73180128983843, 15.520258650202699, 16.012735135300492, 16.523560759066484, 16.70588231586044, 16.811242831518264, 17.034386382832476, 14.73180128983843, 16.70588231586044, 16.929025867174648, 17.111347423968603, 14.73180128983843, 14.73180128983843, 16.759949537130716, 16.860032995687696, 17.111347423968603, 17.281246460764002, 17.45309671769066, 17.875953568510692, 14.73180128983843, 15.444751097694555, 16.11809565095832, 14.914122846632385, 16.64872390202049, 16.90655301132259, 17.14771506813948, 17.281246460764002, 17.399029496420383, 17.858561825798823, 14.73180128983843, 15.520258650202699, 14.914122846632385, 15.520258650202699, 16.90655301132259, 17.111347423968603, 17.312018119430753, 17.37085861945369, 17.553180176247643, 17.974393641323946, 18.132998671500584, 14.73180128983843, 15.424948470398375, 16.012735135300492, 17.182806387950748, 14.73180128983843, 15.573368475516649, 15.943742263813542, 16.41076526492114, 16.523560759066484, 16.811242831518264, 14.914122846632385, 15.60727002719233, 16.077273656438063, 17.034386382832476, 17.312018119430753, 17.399029496420383, 17.50439001207821, 14.914122846632385, 19.231610960168695, 14.73180128983843, 15.319587954740548, 15.89495209964411, 16.213405830762646, 17.034386382832476, 17.14771506813948, 14.73180128983843, 15.424948470398375, 16.012735135300492, 16.99356438831222, 17.216707939626428, 17.37085861945369, 14.914122846632385, 15.424948470398375, 16.90655301132259, 17.034386382832476, 17.216707939626428, 17.37085861945369, 17.45309671769066, 17.875953568510692, 14.914122846632385, 15.60727002719233, 14.914122846632385, 15.60727002719233, 16.588099280204055, 16.811242831518264, 17.034386382832476, 17.216707939626428, 17.399029496420383, 17.893048001869992, 17.98989782785991, 18.132998671500584, 18.29284737244248, 18.390221536467656, 17.37085861945369, 17.50439001207821, 14.914122846632385, 14.73180128983843, 15.068273526459642, 16.70588231586044, 16.99356438831222, 17.216707939626428, 17.341871082580436, 17.50439001207821, 17.98989782785991, 14.914122846632385, 15.687312734865866, 14.914122846632385, 15.687312734865866, 16.860032995687696, 17.10017412337048, 14.914122846632385, 15.60727002719233, 15.89495209964411, 16.951004773893423, 17.073607095985757, 17.281246460764002, 17.399029496420383, 17.622173047734595, 18.03501826314038, 18.172219384653864, 18.31532022829454, 18.469470908121796, 14.914122846632385, 17.50439001207821, 17.64415195445337, 17.72753356339242, 14.73180128983843, 15.761420707019587, 17.073607095985757, 17.281246460764002, 17.4264284706085, 17.599700191882537, 17.72753356339242, 18.159315979817958, 14.73180128983843, 15.520258650202699, 16.11809565095832, 16.41076526492114, 17.216707939626428, 17.37085861945369, 17.50439001207821, 17.665658159674333, 17.822843743196746, 16.90655301132259, 14.914122846632385, 15.60727002719233, 14.73180128983843, 15.201804919084164, 16.25785759333348, 16.588099280204055, 16.811242831518264, 14.73180128983843, 14.508657738524219, 16.588099280204055, 16.759949537130716, 16.99356438831222, 17.182806387950748, 17.312018119430753, 17.72753356339242, 17.909855120186375, 17.98989782785991, 14.73180128983843, 15.717618084361195, 17.14771506813948, 17.312018119430753, 17.47907220409392, 17.588271496058912, 17.686711568872166, 19.450300161133523, 14.508657738524219, 15.319587954740548, 15.955576721460545, 16.300417207752275, 16.300417207752275, 16.523560759066484, 16.811242831518264, 16.99356438831222, 17.216707939626428, 17.686711568872166, 17.840862248699423, 17.893048001869992, 18.064005800013632, 18.078190435005588, 18.420680743952367, 14.914122846632385, 15.64005985001532, 16.213405830762646, 16.523560759066484, 17.50439001207821, 17.622173047734595, 17.7667542765457, 17.909855120186375, 14.914122846632385, 17.034386382832476, 17.216707939626428, 17.37085861945369, 17.50439001207821, 14.914122846632385, 16.90655301132259, 14.914122846632385, 15.60727002719233, 15.955576721460545, 14.914122846632385, 16.523560759066484, 16.811242831518264, 16.90655301132259, 17.14771506813948, 17.216707939626428, 17.72753356339242, 17.909855120186375, 14.914122846632385, 15.687312734865866, 16.11809565095832, 17.216707939626428, 14.914122846632385, 15.520258650202699, 16.06680235657077, 16.454567887579532, 17.216707939626428, 17.37085861945369, 17.45309671769066, 14.73180128983843, 15.319587954740548, 16.860032995687696, 16.90655301132259, 17.1296965626368, 17.24949776244942, 17.341871082580436, 17.840862248699423, 17.942644943009366, 18.09217667698033, 14.914122846632385, 15.60727002719233, 17.216707939626428, 17.37085861945369, 14.914122846632385, 15.687312734865866, 15.830413578506539, 16.951004773893423, 17.1296965626368, 17.312018119430753, 17.50439001207821, 17.622173047734595, 16.811242831518264, 16.99356438831222, 17.14771506813948, 14.73180128983843, 15.424948470398375, 16.64872390202049, 16.90655301132259, 14.73180128983843, 14.914122846632385, 15.60727002719233, 16.759949537130716, 16.951004773893423, 17.111347423968603, 14.73180128983843, 14.914122846632385, 16.70588231586044, 16.811242831518264, 14.73180128983843, 15.520258650202699, 16.11809565095832, 16.90655301132259, 17.111347423968603, 17.312018119430753, 17.4264284706085, 17.588271496058912, 18.064005800013632, 14.914122846632385, 15.60727002719233, 16.11809565095832, 16.300417207752275, 17.216707939626428, 17.399029496420383, 17.553180176247643, 17.686711568872166, 17.72753356339242, 19.450300161133523, 14.508657738524219, 15.201804919084164, 15.89495209964411, 16.300417207752275, 17.034386382832476, 17.111347423968603, 17.312018119430753, 17.45309671769066, 14.73180128983843, 16.811242831518264, 17.034386382832476, 14.914122846632385, 15.520258650202699, 16.11809565095832, 17.073607095985757, 17.281246460764002, 17.4264284706085, 17.576710673657836, 17.64415195445337, 18.105969999112666, 18.197537192638155, 14.914122846632385, 15.761420707019587, 16.213405830762646, 17.312018119430753, 14.914122846632385, 15.60727002719233, 16.11809565095832, 16.523560759066484, 17.281246460764002, 17.50439001207821, 17.622173047734595, 17.7667542765457, 17.909855120186375, 18.31532022829454, 18.469470908121796, 18.643824295266576, 18.75715298057358, 18.951308995014536, 19.432281655630845, 14.914122846632385, 15.761420707019587, 16.300417207752275, 14.914122846632385, 17.686711568872166, 17.822843743196746, 17.958645284355807, 18.064005800013632, 18.197537192638155, 18.560442686327523, 18.643824295266576, 14.73180128983843, 15.64005985001532, 16.11809565095832, 17.353567122343627, 14.914122846632385, 15.60727002719233, 15.830413578506539, 14.73180128983843, 16.588099280204055, 16.90655301132259, 14.914122846632385, 15.60727002719233, 16.11809565095832, 17.073607095985757, 17.281246460764002, 14.508657738524219, 15.424948470398375, 16.012735135300492, 16.99356438831222, 17.24949776244942, 17.37085861945369, 17.553180176247643, 17.665658159674333, 18.09217667698033, 18.197537192638155, 18.31532022829454, 18.420680743952367, 18.60300230074632, 17.45309671769066, 17.599700191882537, 14.648419680899378, 15.520258650202699, 14.914122846632385, 16.70588231586044, 17.034386382832476, 17.216707939626428, 17.341871082580436, 14.914122846632385, 16.883563493097892, 16.99356438831222, 17.216707939626428, 17.37085861945369, 17.50439001207821, 17.909855120186375, 14.914122846632385, 15.687312734865866, 16.166885815127753, 16.46875252257149, 17.24949776244942, 17.45309671769066, 17.599700191882537, 17.72753356339242, 14.914122846632385, 17.034386382832476, 17.24949776244942, 17.399029496420383, 17.47907220409392, 14.73180128983843, 19.519293032620475, 14.508657738524219, 15.60727002719233, 16.11809565095832, 16.454567887579532, 17.111347423968603, 17.281246460764002, 17.37085861945369, 17.50439001207821, 17.665658159674333, 18.064005800013632, 18.197537192638155, 18.31532022829454, 18.469470908121796, 18.60300230074632, 18.951308995014536, 19.06253463012476, 19.11382792451231, 14.914122846632385, 15.761420707019587, 17.822843743196746, 14.508657738524219, 15.319587954740548, 15.955576721460545, 16.34123920227253, 16.588099280204055, 13.815510557964274, 14.73180128983843, 15.38412647587812, 14.403297222866392, 16.166885815127753, 16.38045991542581, 16.64872390202049, 16.811242831518264, 16.99356438831222, 17.399029496420383, 17.553180176247643, 17.665658159674333, 17.72753356339242, 17.840862248699423, 18.197537192638155, 18.31532022829454, 18.420680743952367, 14.508657738524219, 15.520258650202699, 17.312018119430753, 17.45309671769066, 17.622173047734595, 14.73180128983843, 15.761420707019587, 17.073607095985757, 17.281246460764002, 17.4264284706085, 17.622173047734595, 14.73180128983843, 16.951004773893423, 17.111347423968603, 17.312018119430753, 17.50439001207821, 17.599700191882537, 16.811242831518264, 16.99356438831222, 17.182806387950748, 14.73180128983843, 15.702580206996654, 16.951004773893423, 14.914122846632385, 15.687312734865866, 16.213405830762646, 16.34123920227253, 17.111347423968603, 17.312018119430753, 17.50439001207821, 17.665658159674333, 17.7667542765457, 18.222229805228526, 18.369387449564815, 14.73180128983843, 15.60727002719233, 16.012735135300492, 17.281246460764002, 17.399029496420383, 17.576710673657836, 17.72753356339242, 17.909855120186375, 18.31532022829454, 18.420680743952367, 14.914122846632385, 15.687312734865866, 14.73180128983843, 17.182806387950748, 17.281246460764002, 17.45309671769066, 17.622173047734595, 17.7667542765457, 16.90655301132259, 17.111347423968603, 17.341871082580436, 17.50439001207821, 17.72753356339242, 18.132998671500584, 14.914122846632385, 14.914122846632385, 15.761420707019587, 16.213405830762646, 17.281246460764002, 17.341871082580436, 17.50439001207821, 17.64415195445337, 17.7667542765457, 19.519293032620475, 14.22097566607244, 15.201804919084164, 15.89495209964411, 16.300417207752275, 16.38045991542581, 16.64872390202049, 16.90655301132259, 14.508657738524219, 15.201804919084164, 16.759949537130716, 17.034386382832476, 14.73180128983843, 15.830413578506539, 16.213405830762646, 17.182806387950748, 17.341871082580436, 17.553180176247643, 17.72753356339242, 14.73180128983843, 16.90655301132259, 17.111347423968603, 17.281246460764002, 17.50439001207821, 17.622173047734595, 16.90655301132259, 17.111347423968603, 14.73180128983843, 15.60727002719233, 15.89495209964411, 16.90655301132259, 17.111347423968603, 17.312018119430753, 17.50439001207821, 14.73180128983843, 16.90655301132259, 17.14771506813948, 17.341871082580436, 17.45309671769066, 14.508657738524219, 16.811242831518264, 17.111347423968603, 17.312018119430753, 17.50439001207821, 17.686711568872166, 18.197537192638155, 18.420680743952367, 14.73180128983843, 15.789591583986283, 16.300417207752275, 17.553180176247643, 14.914122846632385, 15.761420707019587, 14.73180128983843, 14.73180128983843, 16.811242831518264, 16.90655301132259, 17.111347423968603, 17.281246460764002, 17.50439001207821, 17.98989782785991, 18.132998671500584, 14.73180128983843, 15.761420707019587, 16.300417207752275, 17.45309671769066, 17.64415195445337, 17.822843743196746, 17.98989782785991, 14.73180128983843, 17.073607095985757, 17.341871082580436, 17.529082624668582, 14.914122846632385, 15.687312734865866, 17.14771506813948, 17.341871082580436, 17.50439001207821, 17.622173047734595, 14.914122846632385, 16.972510979114386, 14.914122846632385, 15.761420707019587, 16.11809565095832, 16.364955728889846, 17.182806387950748, 17.37085861945369, 14.914122846632385, 15.687312734865866, 16.166885815127753, 16.642824179893303, 16.860032995687696, 17.09265529095645, 17.312018119430753, 17.50439001207821, 17.98989782785991, 18.132998671500584, 18.31532022829454, 14.914122846632385, 15.89495209964411, 17.45309671769066, 14.914122846632385, 15.761420707019587, 16.300417207752275, 16.588099280204055, 17.4264284706085, 17.50439001207821, 14.914122846632385, 15.687312734865866, 14.914122846632385, 19.729013563602543, 14.914122846632385, 15.60727002719233, 16.213405830762646, 14.914122846632385, 16.588099280204055, 16.90655301132259, 17.16541464523888, 17.24949776244942, 17.399029496420383, 16.811242831518264, 17.073607095985757, 14.914122846632385, 15.761420707019587, 16.300417207752275, 17.24949776244942, 17.4264284706085, 17.50439001207821, 17.72753356339242, 17.858561825798823, 18.31532022829454, 18.48833939242618, 18.683045008419857, 18.921456031864853, 19.06253463012476, 18.197537192638155, 18.31532022829454, 18.51599092375669, 18.60300230074632, 14.914122846632385, 17.622173047734595, 17.909855120186375, 18.064005800013632, 14.914122846632385, 15.955576721460545, 17.399029496420383, 17.50439001207821, 17.686711568872166, 17.909855120186375, 14.914122846632385, 17.111347423968603, 17.37085861945369, 17.622173047734595, 17.785802471516394, 17.98989782785991, 18.420680743952367, 18.60300230074632, 14.914122846632385, 15.201804919084164, 16.012735135300492, 17.50439001207821, 17.7667542765457, 17.909855120186375, 18.064005800013632, 18.197537192638155, 17.37085861945369, 17.4264284706085, 17.576710673657836, 17.822843743196746, 14.914122846632385, 17.111347423968603, 14.914122846632385, 16.012735135300492, 16.38045991542581, 14.914122846632385, 16.90655301132259, 14.914122846632385, 15.60727002719233, 14.914122846632385, 15.89495209964411, 17.111347423968603, 14.914122846632385, 15.830413578506539, 16.454567887579532, 16.70588231586044, 17.553180176247643, 17.72753356339242, 17.909855120186375, 18.064005800013632, 18.132998671500584, 18.51599092375669, 18.643824295266576, 18.82614585206053, 18.951308995014536, 19.11382792451231, 19.519293032620475, 14.914122846632385, 15.89495209964411, 16.64872390202049, 16.951004773893423, 18.159315979817958, 18.258161814454592, 18.420680743952367, 18.560442686327523, 18.683045008419857, 17.576710673657836, 17.822843743196746, 17.98989782785991, 14.914122846632385, 16.11809565095832, 17.45309671769066, 17.64415195445337, 17.72753356339242, 17.858561825798823, 17.98989782785991, 18.420680743952367, 18.560442686327523, 18.643824295266576, 18.720785336402702, 14.914122846632385, 20.107079697522593, 14.914122846632385, 15.830413578506539, 16.34123920227253, 16.588099280204055, 17.312018119430753, 17.553180176247643, 17.7473361906886, 17.958645284355807, 18.132998671500584, 18.560442686327523, 18.720785336402702, 18.890684373198102, 14.914122846632385, 16.11809565095832, 17.785802471516394, 14.914122846632385, 16.012735135300492, 14.914122846632385, 16.012735135300492, 17.281246460764002, 14.914122846632385, 16.012735135300492, 16.588099280204055, 16.70588231586044, 17.622173047734595, 17.80449460452855, 17.958645284355807, 18.132998671500584, 14.914122846632385, 17.4264284706085, 17.665658159674333, 14.914122846632385, 16.012735135300492, 16.588099280204055, 17.553180176247643, 17.72753356339242, 17.909855120186375, 14.914122846632385, 15.761420707019587, 17.50439001207821, 17.622173047734595, 14.914122846632385, 16.11809565095832, 16.454567887579532, 17.47907220409392, 17.622173047734595, 17.858561825798823, 17.98989782785991, 14.914122846632385, 17.37085861945369, 17.622173047734595, 17.7473361906886, 14.914122846632385, 15.89495209964411, 17.281246460764002, 17.4264284706085, 17.576710673657836, 14.914122846632385, 16.012735135300492, 17.37085861945369, 17.50439001207821, 17.72753356339242, 17.909855120186375, 18.064005800013632, 17.312018119430753, 17.50439001207821, 17.72753356339242, 17.909855120186375, 18.132998671500584, 18.560442686327523, 15.068273526459642, 15.201804919084164, 14.914122846632385, 15.520258650202699, 17.216707939626428, 17.4264284706085, 17.553180176247643, 17.686711568872166, 17.822843743196746, 18.258161814454592, 14.914122846632385, 15.60727002719233, 16.012735135300492, 16.489659207390805, 17.37085861945369, 17.50439001207821, 14.914122846632385, 15.464169183551656, 16.012735135300492, 17.182806387950748, 17.312018119430753, 14.914122846632385, 15.687312734865866, 16.300417207752275, 17.341871082580436, 17.50439001207821, 17.622173047734595, 17.7667542765457, 17.909855120186375, 18.31532022829454, 18.469470908121796, 15.068273526459642, 16.012735135300492, 16.300417207752275, 17.216707939626428, 17.4264284706085, 17.576710673657836, 17.7473361906886, 15.068273526459642, 17.073607095985757, 17.281246460764002, 17.4264284706085, 14.914122846632385, 15.761420707019587, 17.111347423968603, 17.216707939626428, 14.914122846632385, 15.761420707019587, 16.11809565095832, 20.16114691879287, 14.914122846632385, 15.687312734865866, 14.914122846632385, 15.520258650202699, 16.588099280204055, 16.860032995687696, 17.111347423968603, 17.24949776244942, 17.45309671769066, 17.875953568510692, 17.98989782785991, 18.146243898250606, 18.234351165760874, 18.369387449564815, 17.281246460764002, 17.45309671769066, 17.599700191882537, 17.785802471516394, 17.875953568510692, 18.28141867661886, 18.390221536467656, 18.51599092375669, 18.60300230074632, 18.720785336402702, 19.0358663830426, 19.138520537102682, 15.068273526459642, 15.830413578506539, 16.300417207752275, 17.72753356339242, 17.875953568510692, 18.02020317735524, 18.132998671500584, 18.234351165760874, 18.60300230074632, 15.201804919084164, 16.166885815127753, 16.38045991542581, 16.67771143889374, 17.576710673657836, 17.72753356339242, 17.840862248699423, 18.0051652999907, 18.09217667698033, 18.420680743952367, 15.068273526459642, 15.60727002719233, 14.914122846632385, 15.687312734865866, 17.14771506813948, 17.4264284706085, 17.50439001207821, 17.665658159674333, 14.73180128983843, 17.034386382832476, 17.216707939626428, 17.4264284706085, 17.553180176247643, 17.665658159674333, 18.132998671500584, 18.197537192638155, 18.369387449564815, 18.420680743952367, 18.534009429259367, 17.37085861945369, 17.50439001207821, 17.665658159674333, 17.785802471516394, 17.909855120186375, 18.269857854217783, 18.34811005111753, 18.420680743952367, 18.51599092375669, 18.60300230074632, 18.951308995014536, 15.068273526459642, 16.012735135300492, 16.523560759066484, 16.860032995687696, 17.665658159674333, 17.785802471516394, 17.926384422137584, 17.98989782785991, 18.09217667698033, 18.420680743952367, 15.068273526459642, 15.687312734865866, 16.300417207752275, 16.588099280204055, 17.45309671769066, 17.576710673657836, 17.72753356339242, 17.822843743196746, 17.98989782785991, 17.216707939626428, 17.312018119430753, 15.068273526459642, 15.687312734865866, 16.06680235657077, 17.216707939626428, 17.312018119430753, 17.50439001207821, 17.72753356339242, 17.822843743196746, 18.222229805228526, 15.068273526459642, 15.60727002719233, 16.11809565095832, 16.454567887579532, 17.281246460764002, 17.50439001207821, 17.622173047734595, 17.72753356339242, 15.068273526459642, 17.034386382832476, 17.37085861945369, 17.553180176247643, 17.7473361906886, 17.822843743196746, 18.258161814454592, 18.369387449564815, 18.469470908121796, 18.659697644422867, 18.75715298057358, 19.11382792451231, 15.068273526459642, 15.955576721460545, 16.489659207390805, 16.70588231586044, 17.822843743196746, 17.909855120186375, 18.02020317735524, 18.146243898250606, 15.068273526459642, 17.111347423968603, 15.068273526459642, 15.761420707019587, 16.213405830762646, 16.588099280204055, 20.21244021318042, 15.068273526459642, 15.955576721460545, 16.25785759333348, 16.588099280204055, 17.341871082580436, 17.45309671769066, 15.068273526459642, 15.761420707019587, 16.11809565095832, 17.216707939626428, 15.068273526459642, 15.60727002719233, 16.11809565095832, 16.523560759066484, 17.312018119430753, 17.47907220409392, 17.665658159674333, 17.785802471516394, 17.909855120186375, 18.31532022829454, 18.469470908121796, 18.60300230074632, 18.683045008419857, 15.068273526459642, 17.553180176247643, 15.068273526459642, 15.761420707019587, 16.300417207752275, 15.068273526459642, 16.860032995687696, 14.914122846632385, 15.64005985001532, 16.11809565095832, 16.489659207390805, 17.281246460764002, 17.50439001207821, 17.622173047734595, 17.7473361906886, 17.909855120186375, 17.034386382832476, 17.24949776244942, 17.4264284706085, 17.622173047734595, 17.72753356339242, 17.034386382832476, 15.068273526459642, 15.89495209964411, 16.213405830762646, 16.811242831518264, 17.45309671769066, 17.622173047734595, 17.822843743196746, 17.909855120186375, 18.03501826314038, 18.420680743952367, 15.068273526459642, 15.068273526459642, 15.830413578506539, 16.213405830762646, 17.24949776244942, 17.50439001207821, 17.622173047734595, 17.7473361906886, 17.926384422137584, 18.31532022829454, 18.420680743952367, 18.51599092375669, 18.683045008419857, 15.068273526459642, 17.50439001207821, 17.622173047734595, 17.7667542765457, 15.068273526459642, 15.687312734865866, 17.14771506813948, 17.281246460764002, 17.45309671769066, 17.64415195445337, 15.068273526459642, 17.034386382832476, 17.312018119430753, 17.399029496420383, 17.553180176247643, 17.7473361906886, 18.146243898250606, 18.258161814454592, 18.420680743952367, 15.068273526459642, 16.012735135300492, 17.50439001207821, 17.665658159674333, 17.822843743196746, 17.98989782785991, 15.068273526459642, 17.14771506813948, 17.37085861945369, 15.068273526459642, 15.89495209964411, 16.454567887579532, 17.312018119430753, 17.50439001207821, 17.665658159674333, 17.822843743196746, 15.068273526459642, 17.111347423968603, 17.312018119430753, 17.50439001207821, 17.686711568872166, 17.80449460452855, 18.197537192638155, 15.068273526459642, 15.830413578506539, 16.300417207752275, 16.811242831518264, 16.860032995687696, 17.111347423968603, 17.312018119430753, 17.50439001207821, 17.686711568872166, 18.146243898250606, 18.258161814454592, 18.369387449564815, 15.068273526459642, 15.761420707019587, 17.341871082580436, 17.529082624668582, 17.686711568872166, 17.822843743196746, 18.02020317735524, 18.420680743952367, 15.068273526459642, 16.11809565095832, 16.70588231586044, 15.068273526459642, 17.111347423968603, 15.068273526459642, 15.89495209964411, 16.300417207752275, 16.811242831518264, 17.45309671769066, 17.599700191882537, 17.7667542765457, 17.875953568510692, 17.942644943009366, 20.72326583694641, 15.068273526459642, 16.11809565095832, 16.41820024340866, 16.811242831518264, 17.37085861945369, 17.529082624668582, 17.72753356339242, 17.822843743196746, 17.958645284355807, 18.337299135013314, 18.440483371248543, 18.560442686327523, 18.683045008419857, 18.785323857540273, 17.50439001207821, 17.665658159674333, 17.822843743196746, 17.942644943009366, 18.09217667698033, 18.469470908121796, 18.56910074907064, 18.683045008419857]), LinearModel), ModelMatrix{Matrix{Float64}}([1.0 15.201804919084164; 1.0 16.300417207752275; 1.0 16.588099280204055; 1.0 16.811242831518264; 1.0 16.951004773893423; 1.0 17.14771506813948; 1.0 17.622173047734595; 1.0 17.822843743196746; 1.0 14.508657738524219; 1.0 15.201804919084164; 1.0 15.89495209964411; 1.0 17.111347423968603; 1.0 17.281246460764002; 1.0 17.45309671769066; 1.0 17.622173047734595; 1.0 17.840862248699423; 1.0 17.034386382832476; 1.0 17.182806387950748; 1.0 17.37085861945369; 1.0 14.508657738524219; 1.0 14.73180128983843; 1.0 16.64872390202049; 1.0 16.951004773893423; 1.0 14.508657738524219; 1.0 15.424948470398375; 1.0 15.89495209964411; 1.0 16.860032995687696; 1.0 14.508657738524219; 1.0 15.424948470398375; 1.0 15.761420707019587; 1.0 16.300417207752275; 1.0 16.99356438831222; 1.0 14.508657738524219; 1.0 14.508657738524219; 1.0 15.424948470398375; 1.0 14.508657738524219; 1.0 16.213405830762646; 1.0 16.454567887579532; 1.0 14.508657738524219; 1.0 15.201804919084164; 1.0 15.761420707019587; 1.0 16.70588231586044; 1.0 16.90655301132259; 1.0 14.508657738524219; 1.0 15.201804919084164; 1.0 15.60727002719233; 1.0 16.811242831518264; 1.0 14.73180128983843; 1.0 15.424948470398375; 1.0 14.508657738524219; 1.0 14.508657738524219; 1.0 16.300417207752275; 1.0 16.523560759066484; 1.0 16.811242831518264; 1.0 16.99356438831222; 1.0 14.73180128983843; 1.0 16.588099280204055; 1.0 14.508657738524219; 1.0 15.424948470398375; 1.0 15.60727002719233; 1.0 15.830413578506539; 1.0 18.60300230074632; 1.0 14.22097566607244; 1.0 14.508657738524219; 1.0 15.424948470398375; 1.0 15.761420707019587; 1.0 16.523560759066484; 1.0 14.508657738524219; 1.0 15.201804919084164; 1.0 15.761420707019587; 1.0 16.012735135300492; 1.0 16.811242831518264; 1.0 16.99356438831222; 1.0 17.14771506813948; 1.0 17.281246460764002; 1.0 17.341871082580436; 1.0 17.7667542765457; 1.0 17.926384422137584; 1.0 18.064005800013632; 1.0 14.73180128983843; 1.0 15.424948470398375; 1.0 17.216707939626428; 1.0 14.508657738524219; 1.0 15.424948470398375; 1.0 15.89495209964411; 1.0 16.300417207752275; 1.0 17.034386382832476; 1.0 17.216707939626428; 1.0 17.37085861945369; 1.0 17.47907220409392; 1.0 17.665658159674333; 1.0 16.759949537130716; 1.0 14.508657738524219; 1.0 15.424948470398375; 1.0 15.761420707019587; 1.0 16.11809565095832; 1.0 16.90655301132259; 1.0 17.073607095985757; 1.0 17.312018119430753; 1.0 14.508657738524219; 1.0 15.424948470398375; 1.0 16.811242831518264; 1.0 16.99356438831222; 1.0 17.182806387950748; 1.0 17.341871082580436; 1.0 14.73180128983843; 1.0 16.70588231586044; 1.0 16.90655301132259; 1.0 14.22097566607244; 1.0 15.424948470398375; 1.0 15.761420707019587; 1.0 16.811242831518264; 1.0 14.508657738524219; 1.0 15.201804919084164; 1.0 15.687312734865866; 1.0 16.012735135300492; 1.0 16.860032995687696; 1.0 14.508657738524219; 1.0 15.424948470398375; 1.0 15.761420707019587; 1.0 16.06680235657077; 1.0 16.90655301132259; 1.0 14.508657738524219; 1.0 15.424948470398375; 1.0 15.761420707019587; 1.0 16.11809565095832; 1.0 16.90655301132259; 1.0 17.111347423968603; 1.0 17.24949776244942; 1.0 17.4264284706085; 1.0 17.576710673657836; 1.0 18.064005800013632; 1.0 18.258161814454592; 1.0 14.508657738524219; 1.0 15.201804919084164; 1.0 15.89495209964411; 1.0 17.50439001207821; 1.0 17.64415195445337; 1.0 17.785802471516394; 1.0 17.926384422137584; 1.0 18.132998671500584; 1.0 18.560442686327523; 1.0 14.914122846632385; 1.0 15.60727002719233; 1.0 15.89495209964411; 1.0 16.38045991542581; 1.0 16.951004773893423; 1.0 14.508657738524219; 1.0 15.424948470398375; 1.0 14.28551418721001; 1.0 15.424948470398375; 1.0 16.70588231586044; 1.0 16.90655301132259; 1.0 14.508657738524219; 1.0 15.319587954740548; 1.0 15.89495209964411; 1.0 16.860032995687696; 1.0 17.034386382832476; 1.0 17.216707939626428; 1.0 14.508657738524219; 1.0 15.424948470398375; 1.0 16.811242831518264; 1.0 16.99356438831222; 1.0 17.073607095985757; 1.0 17.182806387950748; 1.0 17.341871082580436; 1.0 19.11382792451231; 1.0 14.508657738524219; 1.0 15.363073066680286; 1.0 15.89495209964411; 1.0 16.213405830762646; 1.0 16.012735135300492; 1.0 16.300417207752275; 1.0 16.64872390202049; 1.0 16.811242831518264; 1.0 16.99356438831222; 1.0 17.50439001207821; 1.0 17.64415195445337; 1.0 17.7667542765457; 1.0 14.73180128983843; 1.0 15.424948470398375; 1.0 16.951004773893423; 1.0 17.14771506813948; 1.0 17.312018119430753; 1.0 14.508657738524219; 1.0 15.424948470398375; 1.0 16.70588231586044; 1.0 16.951004773893423; 1.0 17.111347423968603; 1.0 17.312018119430753; 1.0 17.47907220409392; 1.0 16.64872390202049; 1.0 16.860032995687696; 1.0 17.111347423968603; 1.0 17.312018119430753; 1.0 17.45309671769066; 1.0 17.893048001869992; 1.0 18.064005800013632; 1.0 14.73180128983843; 1.0 15.201804919084164; 1.0 15.761420707019587; 1.0 17.14771506813948; 1.0 17.37085861945369; 1.0 14.508657738524219; 1.0 15.424948470398375; 1.0 16.012735135300492; 1.0 17.073607095985757; 1.0 17.281246460764002; 1.0 17.4264284706085; 1.0 17.576710673657836; 1.0 17.7667542765457; 1.0 16.951004773893423; 1.0 17.216707939626428; 1.0 17.37085861945369; 1.0 17.50439001207821; 1.0 17.72753356339242; 1.0 18.09217667698033; 1.0 14.73180128983843; 1.0 15.424948470398375; 1.0 16.012735135300492; 1.0 14.508657738524219; 1.0 16.70588231586044; 1.0 14.73180128983843; 1.0 14.508657738524219; 1.0 15.424948470398375; 1.0 16.012735135300492; 1.0 16.860032995687696; 1.0 17.111347423968603; 1.0 17.281246460764002; 1.0 14.508657738524219; 1.0 15.150511624696614; 1.0 16.70588231586044; 1.0 16.99356438831222; 1.0 17.182806387950748; 1.0 17.312018119430753; 1.0 17.47907220409392; 1.0 17.958645284355807; 1.0 14.73180128983843; 1.0 14.508657738524219; 1.0 15.363073066680286; 1.0 15.89495209964411; 1.0 17.034386382832476; 1.0 17.24949776244942; 1.0 14.508657738524219; 1.0 15.555976732804778; 1.0 16.012735135300492; 1.0 17.073607095985757; 1.0 17.281246460764002; 1.0 17.45309671769066; 1.0 17.64415195445337; 1.0 14.508657738524219; 1.0 16.951004773893423; 1.0 17.216707939626428; 1.0 14.508657738524219; 1.0 14.508657738524219; 1.0 15.424948470398375; 1.0 16.860032995687696; 1.0 14.73180128983843; 1.0 14.508657738524219; 1.0 15.424948470398375; 1.0 14.648419680899378; 1.0 16.588099280204055; 1.0 16.811242831518264; 1.0 17.034386382832476; 1.0 17.24949776244942; 1.0 17.4264284706085; 1.0 16.811242831518264; 1.0 16.99356438831222; 1.0 14.508657738524219; 1.0 15.201804919084164; 1.0 15.761420707019587; 1.0 18.951308995014536; 1.0 14.73180128983843; 1.0 15.363073066680286; 1.0 15.89495209964411; 1.0 14.508657738524219; 1.0 16.06680235657077; 1.0 16.41820024340866; 1.0 16.70588231586044; 1.0 16.883563493097892; 1.0 17.111347423968603; 1.0 17.622173047734595; 1.0 14.73180128983843; 1.0 15.424948470398375; 1.0 14.508657738524219; 1.0 15.424948470398375; 1.0 16.759949537130716; 1.0 16.90655301132259; 1.0 14.508657738524219; 1.0 15.150511624696614; 1.0 14.508657738524219; 1.0 16.489659207390805; 1.0 14.508657738524219; 1.0 15.424948470398375; 1.0 16.012735135300492; 1.0 14.508657738524219; 1.0 16.523560759066484; 1.0 14.508657738524219; 1.0 15.520258650202699; 1.0 14.508657738524219; 1.0 15.424948470398375; 1.0 16.64872390202049; 1.0 16.951004773893423; 1.0 14.508657738524219; 1.0 15.319587954740548; 1.0 15.830413578506539; 1.0 16.454567887579532; 1.0 14.508657738524219; 1.0 15.60727002719233; 1.0 16.012735135300492; 1.0 16.454567887579532; 1.0 16.38045991542581; 1.0 14.508657738524219; 1.0 15.424948470398375; 1.0 16.11809565095832; 1.0 14.508657738524219; 1.0 16.523560759066484; 1.0 16.811242831518264; 1.0 17.034386382832476; 1.0 17.24949776244942; 1.0 17.4264284706085; 1.0 16.811242831518264; 1.0 17.034386382832476; 1.0 14.508657738524219; 1.0 15.60727002719233; 1.0 16.11809565095832; 1.0 17.111347423968603; 1.0 14.73180128983843; 1.0 15.60727002719233; 1.0 16.213405830762646; 1.0 16.588099280204055; 1.0 17.312018119430753; 1.0 17.553180176247643; 1.0 14.914122846632385; 1.0 14.508657738524219; 1.0 15.201804919084164; 1.0 16.90655301132259; 1.0 17.14771506813948; 1.0 14.73180128983843; 1.0 14.508657738524219; 1.0 15.538277155705378; 1.0 16.90655301132259; 1.0 17.14771506813948; 1.0 14.73180128983843; 1.0 14.508657738524219; 1.0 14.508657738524219; 1.0 16.64872390202049; 1.0 14.508657738524219; 1.0 15.520258650202699; 1.0 16.012735135300492; 1.0 14.508657738524219; 1.0 16.588099280204055; 1.0 16.90655301132259; 1.0 17.14771506813948; 1.0 17.37085861945369; 1.0 14.508657738524219; 1.0 16.759949537130716; 1.0 17.034386382832476; 1.0 17.216707939626428; 1.0 17.45309671769066; 1.0 14.73180128983843; 1.0 17.034386382832476; 1.0 14.508657738524219; 1.0 15.717618084361195; 1.0 16.213405830762646; 1.0 16.523560759066484; 1.0 17.281246460764002; 1.0 14.73180128983843; 1.0 14.73180128983843; 1.0 15.60727002719233; 1.0 16.11809565095832; 1.0 17.111347423968603; 1.0 17.312018119430753; 1.0 17.50439001207821; 1.0 17.529082624668582; 1.0 17.686711568872166; 1.0 19.25358986688747; 1.0 14.73180128983843; 1.0 15.068273526459642; 1.0 15.830413578506539; 1.0 16.38045991542581; 1.0 16.38045991542581; 1.0 16.64872390202049; 1.0 16.951004773893423; 1.0 14.508657738524219; 1.0 15.60727002719233; 1.0 17.034386382832476; 1.0 17.216707939626428; 1.0 14.914122846632385; 1.0 14.22097566607244; 1.0 14.508657738524219; 1.0 16.759949537130716; 1.0 14.914122846632385; 1.0 15.687312734865866; 1.0 16.11809565095832; 1.0 16.523560759066484; 1.0 16.588099280204055; 1.0 14.914122846632385; 1.0 15.761420707019587; 1.0 16.11809565095832; 1.0 16.523560759066484; 1.0 17.281246460764002; 1.0 14.73180128983843; 1.0 15.464169183551656; 1.0 16.012735135300492; 1.0 16.38045991542581; 1.0 17.216707939626428; 1.0 17.4264284706085; 1.0 14.73180128983843; 1.0 15.687312734865866; 1.0 14.845129975145433; 1.0 16.64872390202049; 1.0 16.835935444108635; 1.0 17.034386382832476; 1.0 14.690979295318174; 1.0 14.73180128983843; 1.0 16.759949537130716; 1.0 16.99356438831222; 1.0 17.182806387950748; 1.0 17.356469882001587; 1.0 17.576710673657836; 1.0 16.90655301132259; 1.0 14.914122846632385; 1.0 14.914122846632385; 1.0 15.60727002719233; 1.0 16.11809565095832; 1.0 17.034386382832476; 1.0 17.19990082131005; 1.0 17.37085861945369; 1.0 17.553180176247643; 1.0 14.73180128983843; 1.0 16.90655301132259; 1.0 14.808762330974558; 1.0 15.687312734865866; 1.0 16.11809565095832; 1.0 16.489659207390805; 1.0 16.454567887579532; 1.0 14.73180128983843; 1.0 14.73180128983843; 1.0 15.60727002719233; 1.0 15.717618084361195; 1.0 16.860032995687696; 1.0 17.034386382832476; 1.0 14.73180128983843; 1.0 15.60727002719233; 1.0 16.06680235657077; 1.0 17.073607095985757; 1.0 17.281246460764002; 1.0 14.73180128983843; 1.0 15.464169183551656; 1.0 15.830413578506539; 1.0 16.523560759066484; 1.0 14.73180128983843; 1.0 15.520258650202699; 1.0 14.73180128983843; 1.0 15.464169183551656; 1.0 16.325109820342647; 1.0 16.64872390202049; 1.0 16.951004773893423; 1.0 14.73180128983843; 1.0 14.73180128983843; 1.0 16.67771143889374; 1.0 16.951004773893423; 1.0 17.182806387950748; 1.0 17.4264284706085; 1.0 17.622173047734595; 1.0 18.132998671500584; 1.0 14.845129975145433; 1.0 15.687312734865866; 1.0 14.73180128983843; 1.0 15.555976732804778; 1.0 16.951004773893423; 1.0 14.73180128983843; 1.0 14.914122846632385; 1.0 15.687312734865866; 1.0 16.213405830762646; 1.0 17.1296965626368; 1.0 17.312018119430753; 1.0 17.50439001207821; 1.0 17.599700191882537; 1.0 17.785802471516394; 1.0 19.11382792451231; 1.0 14.22097566607244; 1.0 14.914122846632385; 1.0 15.573368475516649; 1.0 14.73180128983843; 1.0 16.012735135300492; 1.0 16.523560759066484; 1.0 14.73180128983843; 1.0 15.60727002719233; 1.0 16.11809565095832; 1.0 17.111347423968603; 1.0 17.341871082580436; 1.0 17.529082624668582; 1.0 17.72753356339242; 1.0 17.942644943009366; 1.0 18.469470908121796; 1.0 14.914122846632385; 1.0 15.761420707019587; 1.0 14.73180128983843; 1.0 15.424948470398375; 1.0 17.312018119430753; 1.0 14.73180128983843; 1.0 15.761420707019587; 1.0 14.914122846632385; 1.0 15.687312734865866; 1.0 17.034386382832476; 1.0 17.312018119430753; 1.0 17.50439001207821; 1.0 17.72753356339242; 1.0 14.73180128983843; 1.0 17.216707939626428; 1.0 17.45309671769066; 1.0 14.508657738524219; 1.0 15.424948470398375; 1.0 14.914122846632385; 1.0 16.90655301132259; 1.0 14.508657738524219; 1.0 14.914122846632385; 1.0 15.761420707019587; 1.0 16.300417207752275; 1.0 16.70588231586044; 1.0 14.73180128983843; 1.0 15.761420707019587; 1.0 14.914122846632385; 1.0 15.761420707019587; 1.0 17.034386382832476; 1.0 17.281246460764002; 1.0 14.914122846632385; 1.0 15.761420707019587; 1.0 16.213405830762646; 1.0 17.216707939626428; 1.0 17.399029496420383; 1.0 17.576710673657836; 1.0 14.914122846632385; 1.0 15.761420707019587; 1.0 16.811242831518264; 1.0 17.034386382832476; 1.0 17.281246460764002; 1.0 14.914122846632385; 1.0 14.914122846632385; 1.0 16.90655301132259; 1.0 17.14771506813948; 1.0 14.914122846632385; 1.0 15.687312734865866; 1.0 16.11809565095832; 1.0 17.14771506813948; 1.0 17.37085861945369; 1.0 17.599700191882537; 1.0 14.914122846632385; 1.0 15.702580206996654; 1.0 17.312018119430753; 1.0 17.45309671769066; 1.0 17.64415195445337; 1.0 14.914122846632385; 1.0 15.761420707019587; 1.0 16.90655301132259; 1.0 17.216707939626428; 1.0 17.4264284706085; 1.0 17.622173047734595; 1.0 17.822843743196746; 1.0 17.216707939626428; 1.0 14.914122846632385; 1.0 15.89495209964411; 1.0 16.34123920227253; 1.0 16.733281290048552; 1.0 17.50439001207821; 1.0 17.72753356339242; 1.0 17.909855120186375; 1.0 14.914122846632385; 1.0 15.761420707019587; 1.0 17.4264284706085; 1.0 17.622173047734595; 1.0 17.822843743196746; 1.0 18.02020317735524; 1.0 18.197537192638155; 1.0 18.720785336402702; 1.0 14.73180128983843; 1.0 15.830413578506539; 1.0 14.914122846632385; 1.0 14.914122846632385; 1.0 17.341871082580436; 1.0 14.914122846632385; 1.0 15.89495209964411; 1.0 14.914122846632385; 1.0 15.89495209964411; 1.0 19.296149481306266; 1.0 14.914122846632385; 1.0 15.424948470398375; 1.0 14.914122846632385; 1.0 15.830413578506539; 1.0 16.811242831518264; 1.0 17.111347423968603; 1.0 17.341871082580436; 1.0 14.914122846632385; 1.0 15.830413578506539; 1.0 17.216707939626428; 1.0 14.914122846632385; 1.0 15.761420707019587; 1.0 14.914122846632385; 1.0 15.60727002719233; 1.0 16.523560759066484; 1.0 14.914122846632385; 1.0 14.914122846632385; 1.0 15.761420707019587; 1.0 14.914122846632385; 1.0 16.811242831518264; 1.0 17.073607095985757; 1.0 14.914122846632385; 1.0 14.914122846632385; 1.0 15.761420707019587; 1.0 16.759949537130716; 1.0 17.034386382832476; 1.0 17.281246460764002; 1.0 17.45309671769066; 1.0 17.64415195445337; 1.0 17.034386382832476; 1.0 17.312018119430753; 1.0 14.914122846632385; 1.0 15.60727002719233; 1.0 16.213405830762646; 1.0 17.312018119430753; 1.0 14.73180128983843; 1.0 14.508657738524219; 1.0 14.914122846632385; 1.0 15.761420707019587; 1.0 16.951004773893423; 1.0 17.216707939626428; 1.0 14.914122846632385; 1.0 15.687312734865866; 1.0 16.300417207752275; 1.0 17.312018119430753; 1.0 17.553180176247643; 1.0 17.72753356339242; 1.0 17.98989782785991; 1.0 14.914122846632385; 1.0 17.312018119430753; 1.0 17.50439001207821; 1.0 14.914122846632385; 1.0 15.732433170146335; 1.0 16.25785759333348; 1.0 17.312018119430753; 1.0 17.37085861945369; 1.0 14.914122846632385; 1.0 15.761420707019587; 1.0 16.213405830762646; 1.0 17.281246460764002; 1.0 17.43985149094064; 1.0 17.64415195445337; 1.0 14.914122846632385; 1.0 15.830413578506539; 1.0 17.111347423968603; 1.0 14.914122846632385; 1.0 15.761420707019587; 1.0 14.914122846632385; 1.0 14.914122846632385; 1.0 16.759949537130716; 1.0 17.034386382832476; 1.0 17.24949776244942; 1.0 17.47907220409392; 1.0 14.914122846632385; 1.0 17.111347423968603; 1.0 17.216707939626428; 1.0 14.914122846632385; 1.0 15.761420707019587; 1.0 16.25785759333348; 1.0 17.216707939626428; 1.0 17.466168799258014; 1.0 17.622173047734595; 1.0 14.914122846632385; 1.0 15.761420707019587; 1.0 17.24949776244942; 1.0 17.281246460764002; 1.0 17.50439001207821; 1.0 17.64415195445337; 1.0 14.914122846632385; 1.0 16.951004773893423; 1.0 17.216707939626428; 1.0 17.47907220409392; 1.0 17.599700191882537; 1.0 17.822843743196746; 1.0 18.197537192638155; 1.0 18.51599092375669; 1.0 18.683045008419857; 1.0 18.951308995014536; 1.0 19.11382792451231; 1.0 18.420680743952367; 1.0 18.469470908121796; 1.0 18.51599092375669; 1.0 18.643824295266576; 1.0 18.720785336402702; 1.0 18.980296531887788; 1.0 19.04661917481886; 1.0 19.08851011652802; 1.0 14.914122846632385; 1.0 15.60727002719233; 1.0 19.450300161133523; 1.0 14.22097566607244; 1.0 14.73180128983843; 1.0 15.830413578506539; 1.0 16.300417207752275; 1.0 16.759949537130716; 1.0 16.99356438831222; 1.0 14.914122846632385; 1.0 15.60727002719233; 1.0 16.11809565095832; 1.0 17.034386382832476; 1.0 17.216707939626428; 1.0 17.312018119430753; 1.0 14.914122846632385; 1.0 15.068273526459642; 1.0 16.70588231586044; 1.0 16.99356438831222; 1.0 17.216707939626428; 1.0 17.37085861945369; 1.0 14.914122846632385; 1.0 16.70588231586044; 1.0 16.99356438831222; 1.0 14.914122846632385; 1.0 15.068273526459642; 1.0 15.702580206996654; 1.0 16.860032995687696; 1.0 14.914122846632385; 1.0 15.687312734865866; 1.0 16.012735135300492; 1.0 16.38045991542581; 1.0 17.14771506813948; 1.0 17.341871082580436; 1.0 17.50439001207821; 1.0 17.72753356339242; 1.0 17.909855120186375; 1.0 18.31532022829454; 1.0 14.73180128983843; 1.0 15.60727002719233; 1.0 16.11809565095832; 1.0 16.454567887579532; 1.0 17.26549810379586; 1.0 14.914122846632385; 1.0 15.687312734865866; 1.0 16.11809565095832; 1.0 16.588099280204055; 1.0 17.312018119430753; 1.0 17.50439001207821; 1.0 14.73180128983843; 1.0 15.60727002719233; 1.0 16.11809565095832; 1.0 17.16541464523888; 1.0 14.603967918328545; 1.0 15.424948470398375; 1.0 16.012735135300492; 1.0 16.38045991542581; 1.0 17.111347423968603; 1.0 14.73180128983843; 1.0 14.73180128983843; 1.0 15.520258650202699; 1.0 16.012735135300492; 1.0 16.523560759066484; 1.0 16.70588231586044; 1.0 16.811242831518264; 1.0 17.034386382832476; 1.0 14.73180128983843; 1.0 16.70588231586044; 1.0 16.929025867174648; 1.0 17.111347423968603; 1.0 14.73180128983843; 1.0 14.73180128983843; 1.0 16.759949537130716; 1.0 16.860032995687696; 1.0 17.111347423968603; 1.0 17.281246460764002; 1.0 17.45309671769066; 1.0 17.875953568510692; 1.0 14.73180128983843; 1.0 15.444751097694555; 1.0 16.11809565095832; 1.0 14.914122846632385; 1.0 16.64872390202049; 1.0 16.90655301132259; 1.0 17.14771506813948; 1.0 17.281246460764002; 1.0 17.399029496420383; 1.0 17.858561825798823; 1.0 14.73180128983843; 1.0 15.520258650202699; 1.0 14.914122846632385; 1.0 15.520258650202699; 1.0 16.90655301132259; 1.0 17.111347423968603; 1.0 17.312018119430753; 1.0 17.37085861945369; 1.0 17.553180176247643; 1.0 17.974393641323946; 1.0 18.132998671500584; 1.0 14.73180128983843; 1.0 15.424948470398375; 1.0 16.012735135300492; 1.0 17.182806387950748; 1.0 14.73180128983843; 1.0 15.573368475516649; 1.0 15.943742263813542; 1.0 16.41076526492114; 1.0 16.523560759066484; 1.0 16.811242831518264; 1.0 14.914122846632385; 1.0 15.60727002719233; 1.0 16.077273656438063; 1.0 17.034386382832476; 1.0 17.312018119430753; 1.0 17.399029496420383; 1.0 17.50439001207821; 1.0 14.914122846632385; 1.0 19.231610960168695; 1.0 14.73180128983843; 1.0 15.319587954740548; 1.0 15.89495209964411; 1.0 16.213405830762646; 1.0 17.034386382832476; 1.0 17.14771506813948; 1.0 14.73180128983843; 1.0 15.424948470398375; 1.0 16.012735135300492; 1.0 16.99356438831222; 1.0 17.216707939626428; 1.0 17.37085861945369; 1.0 14.914122846632385; 1.0 15.424948470398375; 1.0 16.90655301132259; 1.0 17.034386382832476; 1.0 17.216707939626428; 1.0 17.37085861945369; 1.0 17.45309671769066; 1.0 17.875953568510692; 1.0 14.914122846632385; 1.0 15.60727002719233; 1.0 14.914122846632385; 1.0 15.60727002719233; 1.0 16.588099280204055; 1.0 16.811242831518264; 1.0 17.034386382832476; 1.0 17.216707939626428; 1.0 17.399029496420383; 1.0 17.893048001869992; 1.0 17.98989782785991; 1.0 18.132998671500584; 1.0 18.29284737244248; 1.0 18.390221536467656; 1.0 17.37085861945369; 1.0 17.50439001207821; 1.0 14.914122846632385; 1.0 14.73180128983843; 1.0 15.068273526459642; 1.0 16.70588231586044; 1.0 16.99356438831222; 1.0 17.216707939626428; 1.0 17.341871082580436; 1.0 17.50439001207821; 1.0 17.98989782785991; 1.0 14.914122846632385; 1.0 15.687312734865866; 1.0 14.914122846632385; 1.0 15.687312734865866; 1.0 16.860032995687696; 1.0 17.10017412337048; 1.0 14.914122846632385; 1.0 15.60727002719233; 1.0 15.89495209964411; 1.0 16.951004773893423; 1.0 17.073607095985757; 1.0 17.281246460764002; 1.0 17.399029496420383; 1.0 17.622173047734595; 1.0 18.03501826314038; 1.0 18.172219384653864; 1.0 18.31532022829454; 1.0 18.469470908121796; 1.0 14.914122846632385; 1.0 17.50439001207821; 1.0 17.64415195445337; 1.0 17.72753356339242; 1.0 14.73180128983843; 1.0 15.761420707019587; 1.0 17.073607095985757; 1.0 17.281246460764002; 1.0 17.4264284706085; 1.0 17.599700191882537; 1.0 17.72753356339242; 1.0 18.159315979817958; 1.0 14.73180128983843; 1.0 15.520258650202699; 1.0 16.11809565095832; 1.0 16.41076526492114; 1.0 17.216707939626428; 1.0 17.37085861945369; 1.0 17.50439001207821; 1.0 17.665658159674333; 1.0 17.822843743196746; 1.0 16.90655301132259; 1.0 14.914122846632385; 1.0 15.60727002719233; 1.0 14.73180128983843; 1.0 15.201804919084164; 1.0 16.25785759333348; 1.0 16.588099280204055; 1.0 16.811242831518264; 1.0 14.73180128983843; 1.0 14.508657738524219; 1.0 16.588099280204055; 1.0 16.759949537130716; 1.0 16.99356438831222; 1.0 17.182806387950748; 1.0 17.312018119430753; 1.0 17.72753356339242; 1.0 17.909855120186375; 1.0 17.98989782785991; 1.0 14.73180128983843; 1.0 15.717618084361195; 1.0 17.14771506813948; 1.0 17.312018119430753; 1.0 17.47907220409392; 1.0 17.588271496058912; 1.0 17.686711568872166; 1.0 19.450300161133523; 1.0 14.508657738524219; 1.0 15.319587954740548; 1.0 15.955576721460545; 1.0 16.300417207752275; 1.0 16.300417207752275; 1.0 16.523560759066484; 1.0 16.811242831518264; 1.0 16.99356438831222; 1.0 17.216707939626428; 1.0 17.686711568872166; 1.0 17.840862248699423; 1.0 17.893048001869992; 1.0 18.064005800013632; 1.0 18.078190435005588; 1.0 18.420680743952367; 1.0 14.914122846632385; 1.0 15.64005985001532; 1.0 16.213405830762646; 1.0 16.523560759066484; 1.0 17.50439001207821; 1.0 17.622173047734595; 1.0 17.7667542765457; 1.0 17.909855120186375; 1.0 14.914122846632385; 1.0 17.034386382832476; 1.0 17.216707939626428; 1.0 17.37085861945369; 1.0 17.50439001207821; 1.0 14.914122846632385; 1.0 16.90655301132259; 1.0 14.914122846632385; 1.0 15.60727002719233; 1.0 15.955576721460545; 1.0 14.914122846632385; 1.0 16.523560759066484; 1.0 16.811242831518264; 1.0 16.90655301132259; 1.0 17.14771506813948; 1.0 17.216707939626428; 1.0 17.72753356339242; 1.0 17.909855120186375; 1.0 14.914122846632385; 1.0 15.687312734865866; 1.0 16.11809565095832; 1.0 17.216707939626428; 1.0 14.914122846632385; 1.0 15.520258650202699; 1.0 16.06680235657077; 1.0 16.454567887579532; 1.0 17.216707939626428; 1.0 17.37085861945369; 1.0 17.45309671769066; 1.0 14.73180128983843; 1.0 15.319587954740548; 1.0 16.860032995687696; 1.0 16.90655301132259; 1.0 17.1296965626368; 1.0 17.24949776244942; 1.0 17.341871082580436; 1.0 17.840862248699423; 1.0 17.942644943009366; 1.0 18.09217667698033; 1.0 14.914122846632385; 1.0 15.60727002719233; 1.0 17.216707939626428; 1.0 17.37085861945369; 1.0 14.914122846632385; 1.0 15.687312734865866; 1.0 15.830413578506539; 1.0 16.951004773893423; 1.0 17.1296965626368; 1.0 17.312018119430753; 1.0 17.50439001207821; 1.0 17.622173047734595; 1.0 16.811242831518264; 1.0 16.99356438831222; 1.0 17.14771506813948; 1.0 14.73180128983843; 1.0 15.424948470398375; 1.0 16.64872390202049; 1.0 16.90655301132259; 1.0 14.73180128983843; 1.0 14.914122846632385; 1.0 15.60727002719233; 1.0 16.759949537130716; 1.0 16.951004773893423; 1.0 17.111347423968603; 1.0 14.73180128983843; 1.0 14.914122846632385; 1.0 16.70588231586044; 1.0 16.811242831518264; 1.0 14.73180128983843; 1.0 15.520258650202699; 1.0 16.11809565095832; 1.0 16.90655301132259; 1.0 17.111347423968603; 1.0 17.312018119430753; 1.0 17.4264284706085; 1.0 17.588271496058912; 1.0 18.064005800013632; 1.0 14.914122846632385; 1.0 15.60727002719233; 1.0 16.11809565095832; 1.0 16.300417207752275; 1.0 17.216707939626428; 1.0 17.399029496420383; 1.0 17.553180176247643; 1.0 17.686711568872166; 1.0 17.72753356339242; 1.0 19.450300161133523; 1.0 14.508657738524219; 1.0 15.201804919084164; 1.0 15.89495209964411; 1.0 16.300417207752275; 1.0 17.034386382832476; 1.0 17.111347423968603; 1.0 17.312018119430753; 1.0 17.45309671769066; 1.0 14.73180128983843; 1.0 16.811242831518264; 1.0 17.034386382832476; 1.0 14.914122846632385; 1.0 15.520258650202699; 1.0 16.11809565095832; 1.0 17.073607095985757; 1.0 17.281246460764002; 1.0 17.4264284706085; 1.0 17.576710673657836; 1.0 17.64415195445337; 1.0 18.105969999112666; 1.0 18.197537192638155; 1.0 14.914122846632385; 1.0 15.761420707019587; 1.0 16.213405830762646; 1.0 17.312018119430753; 1.0 14.914122846632385; 1.0 15.60727002719233; 1.0 16.11809565095832; 1.0 16.523560759066484; 1.0 17.281246460764002; 1.0 17.50439001207821; 1.0 17.622173047734595; 1.0 17.7667542765457; 1.0 17.909855120186375; 1.0 18.31532022829454; 1.0 18.469470908121796; 1.0 18.643824295266576; 1.0 18.75715298057358; 1.0 18.951308995014536; 1.0 19.432281655630845; 1.0 14.914122846632385; 1.0 15.761420707019587; 1.0 16.300417207752275; 1.0 14.914122846632385; 1.0 17.686711568872166; 1.0 17.822843743196746; 1.0 17.958645284355807; 1.0 18.064005800013632; 1.0 18.197537192638155; 1.0 18.560442686327523; 1.0 18.643824295266576; 1.0 14.73180128983843; 1.0 15.64005985001532; 1.0 16.11809565095832; 1.0 17.353567122343627; 1.0 14.914122846632385; 1.0 15.60727002719233; 1.0 15.830413578506539; 1.0 14.73180128983843; 1.0 16.588099280204055; 1.0 16.90655301132259; 1.0 14.914122846632385; 1.0 15.60727002719233; 1.0 16.11809565095832; 1.0 17.073607095985757; 1.0 17.281246460764002; 1.0 14.508657738524219; 1.0 15.424948470398375; 1.0 16.012735135300492; 1.0 16.99356438831222; 1.0 17.24949776244942; 1.0 17.37085861945369; 1.0 17.553180176247643; 1.0 17.665658159674333; 1.0 18.09217667698033; 1.0 18.197537192638155; 1.0 18.31532022829454; 1.0 18.420680743952367; 1.0 18.60300230074632; 1.0 17.45309671769066; 1.0 17.599700191882537; 1.0 14.648419680899378; 1.0 15.520258650202699; 1.0 14.914122846632385; 1.0 16.70588231586044; 1.0 17.034386382832476; 1.0 17.216707939626428; 1.0 17.341871082580436; 1.0 14.914122846632385; 1.0 16.883563493097892; 1.0 16.99356438831222; 1.0 17.216707939626428; 1.0 17.37085861945369; 1.0 17.50439001207821; 1.0 17.909855120186375; 1.0 14.914122846632385; 1.0 15.687312734865866; 1.0 16.166885815127753; 1.0 16.46875252257149; 1.0 17.24949776244942; 1.0 17.45309671769066; 1.0 17.599700191882537; 1.0 17.72753356339242; 1.0 14.914122846632385; 1.0 17.034386382832476; 1.0 17.24949776244942; 1.0 17.399029496420383; 1.0 17.47907220409392; 1.0 14.73180128983843; 1.0 19.519293032620475; 1.0 14.508657738524219; 1.0 15.60727002719233; 1.0 16.11809565095832; 1.0 16.454567887579532; 1.0 17.111347423968603; 1.0 17.281246460764002; 1.0 17.37085861945369; 1.0 17.50439001207821; 1.0 17.665658159674333; 1.0 18.064005800013632; 1.0 18.197537192638155; 1.0 18.31532022829454; 1.0 18.469470908121796; 1.0 18.60300230074632; 1.0 18.951308995014536; 1.0 19.06253463012476; 1.0 19.11382792451231; 1.0 14.914122846632385; 1.0 15.761420707019587; 1.0 17.822843743196746; 1.0 14.508657738524219; 1.0 15.319587954740548; 1.0 15.955576721460545; 1.0 16.34123920227253; 1.0 16.588099280204055; 1.0 13.815510557964274; 1.0 14.73180128983843; 1.0 15.38412647587812; 1.0 14.403297222866392; 1.0 16.166885815127753; 1.0 16.38045991542581; 1.0 16.64872390202049; 1.0 16.811242831518264; 1.0 16.99356438831222; 1.0 17.399029496420383; 1.0 17.553180176247643; 1.0 17.665658159674333; 1.0 17.72753356339242; 1.0 17.840862248699423; 1.0 18.197537192638155; 1.0 18.31532022829454; 1.0 18.420680743952367; 1.0 14.508657738524219; 1.0 15.520258650202699; 1.0 17.312018119430753; 1.0 17.45309671769066; 1.0 17.622173047734595; 1.0 14.73180128983843; 1.0 15.761420707019587; 1.0 17.073607095985757; 1.0 17.281246460764002; 1.0 17.4264284706085; 1.0 17.622173047734595; 1.0 14.73180128983843; 1.0 16.951004773893423; 1.0 17.111347423968603; 1.0 17.312018119430753; 1.0 17.50439001207821; 1.0 17.599700191882537; 1.0 16.811242831518264; 1.0 16.99356438831222; 1.0 17.182806387950748; 1.0 14.73180128983843; 1.0 15.702580206996654; 1.0 16.951004773893423; 1.0 14.914122846632385; 1.0 15.687312734865866; 1.0 16.213405830762646; 1.0 16.34123920227253; 1.0 17.111347423968603; 1.0 17.312018119430753; 1.0 17.50439001207821; 1.0 17.665658159674333; 1.0 17.7667542765457; 1.0 18.222229805228526; 1.0 18.369387449564815; 1.0 14.73180128983843; 1.0 15.60727002719233; 1.0 16.012735135300492; 1.0 17.281246460764002; 1.0 17.399029496420383; 1.0 17.576710673657836; 1.0 17.72753356339242; 1.0 17.909855120186375; 1.0 18.31532022829454; 1.0 18.420680743952367; 1.0 14.914122846632385; 1.0 15.687312734865866; 1.0 14.73180128983843; 1.0 17.182806387950748; 1.0 17.281246460764002; 1.0 17.45309671769066; 1.0 17.622173047734595; 1.0 17.7667542765457; 1.0 16.90655301132259; 1.0 17.111347423968603; 1.0 17.341871082580436; 1.0 17.50439001207821; 1.0 17.72753356339242; 1.0 18.132998671500584; 1.0 14.914122846632385; 1.0 14.914122846632385; 1.0 15.761420707019587; 1.0 16.213405830762646; 1.0 17.281246460764002; 1.0 17.341871082580436; 1.0 17.50439001207821; 1.0 17.64415195445337; 1.0 17.7667542765457; 1.0 19.519293032620475; 1.0 14.22097566607244; 1.0 15.201804919084164; 1.0 15.89495209964411; 1.0 16.300417207752275; 1.0 16.38045991542581; 1.0 16.64872390202049; 1.0 16.90655301132259; 1.0 14.508657738524219; 1.0 15.201804919084164; 1.0 16.759949537130716; 1.0 17.034386382832476; 1.0 14.73180128983843; 1.0 15.830413578506539; 1.0 16.213405830762646; 1.0 17.182806387950748; 1.0 17.341871082580436; 1.0 17.553180176247643; 1.0 17.72753356339242; 1.0 14.73180128983843; 1.0 16.90655301132259; 1.0 17.111347423968603; 1.0 17.281246460764002; 1.0 17.50439001207821; 1.0 17.622173047734595; 1.0 16.90655301132259; 1.0 17.111347423968603; 1.0 14.73180128983843; 1.0 15.60727002719233; 1.0 15.89495209964411; 1.0 16.90655301132259; 1.0 17.111347423968603; 1.0 17.312018119430753; 1.0 17.50439001207821; 1.0 14.73180128983843; 1.0 16.90655301132259; 1.0 17.14771506813948; 1.0 17.341871082580436; 1.0 17.45309671769066; 1.0 14.508657738524219; 1.0 16.811242831518264; 1.0 17.111347423968603; 1.0 17.312018119430753; 1.0 17.50439001207821; 1.0 17.686711568872166; 1.0 18.197537192638155; 1.0 18.420680743952367; 1.0 14.73180128983843; 1.0 15.789591583986283; 1.0 16.300417207752275; 1.0 17.553180176247643; 1.0 14.914122846632385; 1.0 15.761420707019587; 1.0 14.73180128983843; 1.0 14.73180128983843; 1.0 16.811242831518264; 1.0 16.90655301132259; 1.0 17.111347423968603; 1.0 17.281246460764002; 1.0 17.50439001207821; 1.0 17.98989782785991; 1.0 18.132998671500584; 1.0 14.73180128983843; 1.0 15.761420707019587; 1.0 16.300417207752275; 1.0 17.45309671769066; 1.0 17.64415195445337; 1.0 17.822843743196746; 1.0 17.98989782785991; 1.0 14.73180128983843; 1.0 17.073607095985757; 1.0 17.341871082580436; 1.0 17.529082624668582; 1.0 14.914122846632385; 1.0 15.687312734865866; 1.0 17.14771506813948; 1.0 17.341871082580436; 1.0 17.50439001207821; 1.0 17.622173047734595; 1.0 14.914122846632385; 1.0 16.972510979114386; 1.0 14.914122846632385; 1.0 15.761420707019587; 1.0 16.11809565095832; 1.0 16.364955728889846; 1.0 17.182806387950748; 1.0 17.37085861945369; 1.0 14.914122846632385; 1.0 15.687312734865866; 1.0 16.166885815127753; 1.0 16.642824179893303; 1.0 16.860032995687696; 1.0 17.09265529095645; 1.0 17.312018119430753; 1.0 17.50439001207821; 1.0 17.98989782785991; 1.0 18.132998671500584; 1.0 18.31532022829454; 1.0 14.914122846632385; 1.0 15.89495209964411; 1.0 17.45309671769066; 1.0 14.914122846632385; 1.0 15.761420707019587; 1.0 16.300417207752275; 1.0 16.588099280204055; 1.0 17.4264284706085; 1.0 17.50439001207821; 1.0 14.914122846632385; 1.0 15.687312734865866; 1.0 14.914122846632385; 1.0 19.729013563602543; 1.0 14.914122846632385; 1.0 15.60727002719233; 1.0 16.213405830762646; 1.0 14.914122846632385; 1.0 16.588099280204055; 1.0 16.90655301132259; 1.0 17.16541464523888; 1.0 17.24949776244942; 1.0 17.399029496420383; 1.0 16.811242831518264; 1.0 17.073607095985757; 1.0 14.914122846632385; 1.0 15.761420707019587; 1.0 16.300417207752275; 1.0 17.24949776244942; 1.0 17.4264284706085; 1.0 17.50439001207821; 1.0 17.72753356339242; 1.0 17.858561825798823; 1.0 18.31532022829454; 1.0 18.48833939242618; 1.0 18.683045008419857; 1.0 18.921456031864853; 1.0 19.06253463012476; 1.0 18.197537192638155; 1.0 18.31532022829454; 1.0 18.51599092375669; 1.0 18.60300230074632; 1.0 14.914122846632385; 1.0 17.622173047734595; 1.0 17.909855120186375; 1.0 18.064005800013632; 1.0 14.914122846632385; 1.0 15.955576721460545; 1.0 17.399029496420383; 1.0 17.50439001207821; 1.0 17.686711568872166; 1.0 17.909855120186375; 1.0 14.914122846632385; 1.0 17.111347423968603; 1.0 17.37085861945369; 1.0 17.622173047734595; 1.0 17.785802471516394; 1.0 17.98989782785991; 1.0 18.420680743952367; 1.0 18.60300230074632; 1.0 14.914122846632385; 1.0 15.201804919084164; 1.0 16.012735135300492; 1.0 17.50439001207821; 1.0 17.7667542765457; 1.0 17.909855120186375; 1.0 18.064005800013632; 1.0 18.197537192638155; 1.0 17.37085861945369; 1.0 17.4264284706085; 1.0 17.576710673657836; 1.0 17.822843743196746; 1.0 14.914122846632385; 1.0 17.111347423968603; 1.0 14.914122846632385; 1.0 16.012735135300492; 1.0 16.38045991542581; 1.0 14.914122846632385; 1.0 16.90655301132259; 1.0 14.914122846632385; 1.0 15.60727002719233; 1.0 14.914122846632385; 1.0 15.89495209964411; 1.0 17.111347423968603; 1.0 14.914122846632385; 1.0 15.830413578506539; 1.0 16.454567887579532; 1.0 16.70588231586044; 1.0 17.553180176247643; 1.0 17.72753356339242; 1.0 17.909855120186375; 1.0 18.064005800013632; 1.0 18.132998671500584; 1.0 18.51599092375669; 1.0 18.643824295266576; 1.0 18.82614585206053; 1.0 18.951308995014536; 1.0 19.11382792451231; 1.0 19.519293032620475; 1.0 14.914122846632385; 1.0 15.89495209964411; 1.0 16.64872390202049; 1.0 16.951004773893423; 1.0 18.159315979817958; 1.0 18.258161814454592; 1.0 18.420680743952367; 1.0 18.560442686327523; 1.0 18.683045008419857; 1.0 17.576710673657836; 1.0 17.822843743196746; 1.0 17.98989782785991; 1.0 14.914122846632385; 1.0 16.11809565095832; 1.0 17.45309671769066; 1.0 17.64415195445337; 1.0 17.72753356339242; 1.0 17.858561825798823; 1.0 17.98989782785991; 1.0 18.420680743952367; 1.0 18.560442686327523; 1.0 18.643824295266576; 1.0 18.720785336402702; 1.0 14.914122846632385; 1.0 20.107079697522593; 1.0 14.914122846632385; 1.0 15.830413578506539; 1.0 16.34123920227253; 1.0 16.588099280204055; 1.0 17.312018119430753; 1.0 17.553180176247643; 1.0 17.7473361906886; 1.0 17.958645284355807; 1.0 18.132998671500584; 1.0 18.560442686327523; 1.0 18.720785336402702; 1.0 18.890684373198102; 1.0 14.914122846632385; 1.0 16.11809565095832; 1.0 17.785802471516394; 1.0 14.914122846632385; 1.0 16.012735135300492; 1.0 14.914122846632385; 1.0 16.012735135300492; 1.0 17.281246460764002; 1.0 14.914122846632385; 1.0 16.012735135300492; 1.0 16.588099280204055; 1.0 16.70588231586044; 1.0 17.622173047734595; 1.0 17.80449460452855; 1.0 17.958645284355807; 1.0 18.132998671500584; 1.0 14.914122846632385; 1.0 17.4264284706085; 1.0 17.665658159674333; 1.0 14.914122846632385; 1.0 16.012735135300492; 1.0 16.588099280204055; 1.0 17.553180176247643; 1.0 17.72753356339242; 1.0 17.909855120186375; 1.0 14.914122846632385; 1.0 15.761420707019587; 1.0 17.50439001207821; 1.0 17.622173047734595; 1.0 14.914122846632385; 1.0 16.11809565095832; 1.0 16.454567887579532; 1.0 17.47907220409392; 1.0 17.622173047734595; 1.0 17.858561825798823; 1.0 17.98989782785991; 1.0 14.914122846632385; 1.0 17.37085861945369; 1.0 17.622173047734595; 1.0 17.7473361906886; 1.0 14.914122846632385; 1.0 15.89495209964411; 1.0 17.281246460764002; 1.0 17.4264284706085; 1.0 17.576710673657836; 1.0 14.914122846632385; 1.0 16.012735135300492; 1.0 17.37085861945369; 1.0 17.50439001207821; 1.0 17.72753356339242; 1.0 17.909855120186375; 1.0 18.064005800013632; 1.0 17.312018119430753; 1.0 17.50439001207821; 1.0 17.72753356339242; 1.0 17.909855120186375; 1.0 18.132998671500584; 1.0 18.560442686327523; 1.0 15.068273526459642; 1.0 15.201804919084164; 1.0 14.914122846632385; 1.0 15.520258650202699; 1.0 17.216707939626428; 1.0 17.4264284706085; 1.0 17.553180176247643; 1.0 17.686711568872166; 1.0 17.822843743196746; 1.0 18.258161814454592; 1.0 14.914122846632385; 1.0 15.60727002719233; 1.0 16.012735135300492; 1.0 16.489659207390805; 1.0 17.37085861945369; 1.0 17.50439001207821; 1.0 14.914122846632385; 1.0 15.464169183551656; 1.0 16.012735135300492; 1.0 17.182806387950748; 1.0 17.312018119430753; 1.0 14.914122846632385; 1.0 15.687312734865866; 1.0 16.300417207752275; 1.0 17.341871082580436; 1.0 17.50439001207821; 1.0 17.622173047734595; 1.0 17.7667542765457; 1.0 17.909855120186375; 1.0 18.31532022829454; 1.0 18.469470908121796; 1.0 15.068273526459642; 1.0 16.012735135300492; 1.0 16.300417207752275; 1.0 17.216707939626428; 1.0 17.4264284706085; 1.0 17.576710673657836; 1.0 17.7473361906886; 1.0 15.068273526459642; 1.0 17.073607095985757; 1.0 17.281246460764002; 1.0 17.4264284706085; 1.0 14.914122846632385; 1.0 15.761420707019587; 1.0 17.111347423968603; 1.0 17.216707939626428; 1.0 14.914122846632385; 1.0 15.761420707019587; 1.0 16.11809565095832; 1.0 20.16114691879287; 1.0 14.914122846632385; 1.0 15.687312734865866; 1.0 14.914122846632385; 1.0 15.520258650202699; 1.0 16.588099280204055; 1.0 16.860032995687696; 1.0 17.111347423968603; 1.0 17.24949776244942; 1.0 17.45309671769066; 1.0 17.875953568510692; 1.0 17.98989782785991; 1.0 18.146243898250606; 1.0 18.234351165760874; 1.0 18.369387449564815; 1.0 17.281246460764002; 1.0 17.45309671769066; 1.0 17.599700191882537; 1.0 17.785802471516394; 1.0 17.875953568510692; 1.0 18.28141867661886; 1.0 18.390221536467656; 1.0 18.51599092375669; 1.0 18.60300230074632; 1.0 18.720785336402702; 1.0 19.0358663830426; 1.0 19.138520537102682; 1.0 15.068273526459642; 1.0 15.830413578506539; 1.0 16.300417207752275; 1.0 17.72753356339242; 1.0 17.875953568510692; 1.0 18.02020317735524; 1.0 18.132998671500584; 1.0 18.234351165760874; 1.0 18.60300230074632; 1.0 15.201804919084164; 1.0 16.166885815127753; 1.0 16.38045991542581; 1.0 16.67771143889374; 1.0 17.576710673657836; 1.0 17.72753356339242; 1.0 17.840862248699423; 1.0 18.0051652999907; 1.0 18.09217667698033; 1.0 18.420680743952367; 1.0 15.068273526459642; 1.0 15.60727002719233; 1.0 14.914122846632385; 1.0 15.687312734865866; 1.0 17.14771506813948; 1.0 17.4264284706085; 1.0 17.50439001207821; 1.0 17.665658159674333; 1.0 14.73180128983843; 1.0 17.034386382832476; 1.0 17.216707939626428; 1.0 17.4264284706085; 1.0 17.553180176247643; 1.0 17.665658159674333; 1.0 18.132998671500584; 1.0 18.197537192638155; 1.0 18.369387449564815; 1.0 18.420680743952367; 1.0 18.534009429259367; 1.0 17.37085861945369; 1.0 17.50439001207821; 1.0 17.665658159674333; 1.0 17.785802471516394; 1.0 17.909855120186375; 1.0 18.269857854217783; 1.0 18.34811005111753; 1.0 18.420680743952367; 1.0 18.51599092375669; 1.0 18.60300230074632; 1.0 18.951308995014536; 1.0 15.068273526459642; 1.0 16.012735135300492; 1.0 16.523560759066484; 1.0 16.860032995687696; 1.0 17.665658159674333; 1.0 17.785802471516394; 1.0 17.926384422137584; 1.0 17.98989782785991; 1.0 18.09217667698033; 1.0 18.420680743952367; 1.0 15.068273526459642; 1.0 15.687312734865866; 1.0 16.300417207752275; 1.0 16.588099280204055; 1.0 17.45309671769066; 1.0 17.576710673657836; 1.0 17.72753356339242; 1.0 17.822843743196746; 1.0 17.98989782785991; 1.0 17.216707939626428; 1.0 17.312018119430753; 1.0 15.068273526459642; 1.0 15.687312734865866; 1.0 16.06680235657077; 1.0 17.216707939626428; 1.0 17.312018119430753; 1.0 17.50439001207821; 1.0 17.72753356339242; 1.0 17.822843743196746; 1.0 18.222229805228526; 1.0 15.068273526459642; 1.0 15.60727002719233; 1.0 16.11809565095832; 1.0 16.454567887579532; 1.0 17.281246460764002; 1.0 17.50439001207821; 1.0 17.622173047734595; 1.0 17.72753356339242; 1.0 15.068273526459642; 1.0 17.034386382832476; 1.0 17.37085861945369; 1.0 17.553180176247643; 1.0 17.7473361906886; 1.0 17.822843743196746; 1.0 18.258161814454592; 1.0 18.369387449564815; 1.0 18.469470908121796; 1.0 18.659697644422867; 1.0 18.75715298057358; 1.0 19.11382792451231; 1.0 15.068273526459642; 1.0 15.955576721460545; 1.0 16.489659207390805; 1.0 16.70588231586044; 1.0 17.822843743196746; 1.0 17.909855120186375; 1.0 18.02020317735524; 1.0 18.146243898250606; 1.0 15.068273526459642; 1.0 17.111347423968603; 1.0 15.068273526459642; 1.0 15.761420707019587; 1.0 16.213405830762646; 1.0 16.588099280204055; 1.0 20.21244021318042; 1.0 15.068273526459642; 1.0 15.955576721460545; 1.0 16.25785759333348; 1.0 16.588099280204055; 1.0 17.341871082580436; 1.0 17.45309671769066; 1.0 15.068273526459642; 1.0 15.761420707019587; 1.0 16.11809565095832; 1.0 17.216707939626428; 1.0 15.068273526459642; 1.0 15.60727002719233; 1.0 16.11809565095832; 1.0 16.523560759066484; 1.0 17.312018119430753; 1.0 17.47907220409392; 1.0 17.665658159674333; 1.0 17.785802471516394; 1.0 17.909855120186375; 1.0 18.31532022829454; 1.0 18.469470908121796; 1.0 18.60300230074632; 1.0 18.683045008419857; 1.0 15.068273526459642; 1.0 17.553180176247643; 1.0 15.068273526459642; 1.0 15.761420707019587; 1.0 16.300417207752275; 1.0 15.068273526459642; 1.0 16.860032995687696; 1.0 14.914122846632385; 1.0 15.64005985001532; 1.0 16.11809565095832; 1.0 16.489659207390805; 1.0 17.281246460764002; 1.0 17.50439001207821; 1.0 17.622173047734595; 1.0 17.7473361906886; 1.0 17.909855120186375; 1.0 17.034386382832476; 1.0 17.24949776244942; 1.0 17.4264284706085; 1.0 17.622173047734595; 1.0 17.72753356339242; 1.0 17.034386382832476; 1.0 15.068273526459642; 1.0 15.89495209964411; 1.0 16.213405830762646; 1.0 16.811242831518264; 1.0 17.45309671769066; 1.0 17.622173047734595; 1.0 17.822843743196746; 1.0 17.909855120186375; 1.0 18.03501826314038; 1.0 18.420680743952367; 1.0 15.068273526459642; 1.0 15.068273526459642; 1.0 15.830413578506539; 1.0 16.213405830762646; 1.0 17.24949776244942; 1.0 17.50439001207821; 1.0 17.622173047734595; 1.0 17.7473361906886; 1.0 17.926384422137584; 1.0 18.31532022829454; 1.0 18.420680743952367; 1.0 18.51599092375669; 1.0 18.683045008419857; 1.0 15.068273526459642; 1.0 17.50439001207821; 1.0 17.622173047734595; 1.0 17.7667542765457; 1.0 15.068273526459642; 1.0 15.687312734865866; 1.0 17.14771506813948; 1.0 17.281246460764002; 1.0 17.45309671769066; 1.0 17.64415195445337; 1.0 15.068273526459642; 1.0 17.034386382832476; 1.0 17.312018119430753; 1.0 17.399029496420383; 1.0 17.553180176247643; 1.0 17.7473361906886; 1.0 18.146243898250606; 1.0 18.258161814454592; 1.0 18.420680743952367; 1.0 15.068273526459642; 1.0 16.012735135300492; 1.0 17.50439001207821; 1.0 17.665658159674333; 1.0 17.822843743196746; 1.0 17.98989782785991; 1.0 15.068273526459642; 1.0 17.14771506813948; 1.0 17.37085861945369; 1.0 15.068273526459642; 1.0 15.89495209964411; 1.0 16.454567887579532; 1.0 17.312018119430753; 1.0 17.50439001207821; 1.0 17.665658159674333; 1.0 17.822843743196746; 1.0 15.068273526459642; 1.0 17.111347423968603; 1.0 17.312018119430753; 1.0 17.50439001207821; 1.0 17.686711568872166; 1.0 17.80449460452855; 1.0 18.197537192638155; 1.0 15.068273526459642; 1.0 15.830413578506539; 1.0 16.300417207752275; 1.0 16.811242831518264; 1.0 16.860032995687696; 1.0 17.111347423968603; 1.0 17.312018119430753; 1.0 17.50439001207821; 1.0 17.686711568872166; 1.0 18.146243898250606; 1.0 18.258161814454592; 1.0 18.369387449564815; 1.0 15.068273526459642; 1.0 15.761420707019587; 1.0 17.341871082580436; 1.0 17.529082624668582; 1.0 17.686711568872166; 1.0 17.822843743196746; 1.0 18.02020317735524; 1.0 18.420680743952367; 1.0 15.068273526459642; 1.0 16.11809565095832; 1.0 16.70588231586044; 1.0 15.068273526459642; 1.0 17.111347423968603; 1.0 15.068273526459642; 1.0 15.89495209964411; 1.0 16.300417207752275; 1.0 16.811242831518264; 1.0 17.45309671769066; 1.0 17.599700191882537; 1.0 17.7667542765457; 1.0 17.875953568510692; 1.0 17.942644943009366; 1.0 20.72326583694641; 1.0 15.068273526459642; 1.0 16.11809565095832; 1.0 16.41820024340866; 1.0 16.811242831518264; 1.0 17.37085861945369; 1.0 17.529082624668582; 1.0 17.72753356339242; 1.0 17.822843743196746; 1.0 17.958645284355807; 1.0 18.337299135013314; 1.0 18.440483371248543; 1.0 18.560442686327523; 1.0 18.683045008419857; 1.0 18.785323857540273; 1.0 17.50439001207821; 1.0 17.665658159674333; 1.0 17.822843743196746; 1.0 17.942644943009366; 1.0 18.09217667698033; 1.0 18.469470908121796; 1.0 18.56910074907064; 1.0 18.683045008419857], [1, 2]))</code></pre>
+</div>
+</div>
+<p><em>Mostrar tabela de resultados da regressao.</em></p>
+<p>Regression coefficient is 0.4, i.e., the prize elasticity of the revenue collected is 0.4. This means that a 1% increase in the announced prize implies an increase of 0.4% in the total revenue collected.</p>
+</section>
+<section id="b" class="level3">
+<h3 class="anchored" data-anchor-id="b">(b)</h3>
+<p><strong>Estimating the number of players (single tickets)</strong></p>
+<p><em>Escrever sobre a fonte detalhadamente</em></p>
+<p>For each game <span class="math inline">\(j\)</span>, we estimate the number of participants (<span class="math inline">\(N_j\)</span>) using the formula: <span class="math display">\[
+N_j = \frac{revenue}{price}
+\]</span> Note that we assume that all individuals choose the simplest and cheapest option. This a fairly strong assumption given that players can choose among several options of entering the lottery game. Still, this gives us a rather good aproximation to start with.</p>
+<div id="6d47e28b" class="cell" data-execution_count="5">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Item (b): Estimating the number of players (single tickets)</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Definindo a função de preço histórico</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">get_ticket_price</span>(data<span class="op">::</span><span class="dt">Date</span>)</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> data <span class="op">&lt;</span> <span class="fu">Date</span>(<span class="fl">2014</span>, <span class="fl">5</span>, <span class="fl">11</span>)</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="fl">2.00</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elseif</span> data <span class="op">&lt;</span> <span class="fu">Date</span>(<span class="fl">2015</span>, <span class="fl">5</span>, <span class="fl">24</span>)</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="fl">2.50</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elseif</span> data <span class="op">&lt;</span> <span class="fu">Date</span>(<span class="fl">2019</span>, <span class="fl">11</span>, <span class="fl">10</span>)</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="fl">3.50</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elseif</span> data <span class="op">&lt;</span> <span class="fu">Date</span>(<span class="fl">2023</span>, <span class="fl">4</span>, <span class="fl">30</span>)</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="fl">4.50</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elseif</span> data <span class="op">&lt;</span> <span class="fu">Date</span>(<span class="fl">2025</span>, <span class="fl">7</span>, <span class="fl">10</span>)</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="fl">5.00</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="fl">6.00</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">end</span></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a><span class="co">### (b)</span></span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a><span class="co"># A função get_ticket_price permanece a mesma</span></span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>df_clean[!, <span class="op">:</span>preco] <span class="op">=</span> <span class="fu">get_ticket_price</span>.(df_clean.data_do_sorteio)</span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a><span class="co"># N_j = Arrecadação / Preço</span></span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>df_clean[!, <span class="op">:</span>n_tickets] <span class="op">=</span> df_clean.arrec <span class="op">./</span> df_clean.preco</span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. Visualizando os resultados para os sorteios recentes</span></span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a><span class="fu">last</span>(<span class="fu">select</span>(df_clean, <span class="op">:</span>data_do_sorteio, <span class="op">:</span>arrec, <span class="op">:</span>preco, <span class="op">:</span>n_tickets), <span class="fl">5</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="6">
+<div><div style="float: left;"><span>5×4 DataFrame</span></div><div style="clear: both;"></div></div><div class="data-frame" style="overflow-x: scroll;">
+<table class="data-frame caption-top table table-sm table-striped small">
+<thead>
+<tr class="columnLabelRow header">
+<th class="stubheadLabel" data-quarto-table-cell-role="th" style="text-align: right; font-weight: bold;">Row</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">data_do_sorteio</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">arrec</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">preco</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">n_tickets</th>
+</tr>
+<tr class="columnLabelRow even">
+<th class="stubheadLabel" data-quarto-table-cell-role="th" style="text-align: right; font-weight: bold;"></th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Date">Date</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Float64">Float64</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Float64">Float64</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Float64">Float64</th>
+</tr>
+</thead>
+<tbody>
+<tr class="dataRow odd">
+<td class="rowLabel" style="text-align: right; font-weight: bold;">1</td>
+<td style="text-align: left;">2026-02-14</td>
+<td style="text-align: right;">6.93446e7</td>
+<td style="text-align: right;">6.0</td>
+<td style="text-align: right;">1.15574e7</td>
+</tr>
+<tr class="dataRow even">
+<td class="rowLabel" style="text-align: right; font-weight: bold;">2</td>
+<td style="text-align: left;">2026-02-19</td>
+<td style="text-align: right;">7.3564e7</td>
+<td style="text-align: right;">6.0</td>
+<td style="text-align: right;">1.22607e7</td>
+</tr>
+<tr class="dataRow odd">
+<td class="rowLabel" style="text-align: right; font-weight: bold;">3</td>
+<td style="text-align: left;">2026-02-21</td>
+<td style="text-align: right;">9.68225e7</td>
+<td style="text-align: right;">6.0</td>
+<td style="text-align: right;">1.61371e7</td>
+</tr>
+<tr class="dataRow even">
+<td class="rowLabel" style="text-align: right; font-weight: bold;">4</td>
+<td style="text-align: left;">2026-02-24</td>
+<td style="text-align: right;">9.31464e7</td>
+<td style="text-align: right;">6.0</td>
+<td style="text-align: right;">1.55244e7</td>
+</tr>
+<tr class="dataRow odd">
+<td class="rowLabel" style="text-align: right; font-weight: bold;">5</td>
+<td style="text-align: left;">2026-02-26</td>
+<td style="text-align: right;">9.92316e7</td>
+<td style="text-align: right;">6.0</td>
+<td style="text-align: right;">1.65386e7</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</section>
+<section id="c" class="level3">
+<h3 class="anchored" data-anchor-id="c">(c)</h3>
+<p><strong>Now we want to compute your expected prize for each draw.</strong></p>
+<p><em>descrever formula e explicar lógica</em></p>
+<p><span class="math display">\[
+\mathbb{E}[Y_j] = \frac{G6_j}{N_j}Y^{6}_{j} + \frac{G5_j}{N_j}Y^{5}_{j} + \frac{G4_j}{N_j}Y^{4}_{j}
+\]</span></p>
+<p>where <span class="math inline">\(G\theta_j\)</span> is the number of individuals who won one of the prizes, depending on the number <span class="math inline">\(\theta \in \{4,5,6\}\)</span> of numbers they got right, and <span class="math inline">\(Y_j^{\theta}\)</span> is the corresponding prize paid to each winner.</p>
+<div id="178c25f6" class="cell" data-execution_count="6">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">### (c) Calculating Expected Prize E[Yj]</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Statistics</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculando os componentes da fórmula: Probabilidade * Valor do Prêmio</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co"># G6/Nj * Y6 + G5/Nj * Y5 + G4/Nj * Y4</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>df_clean[!, <span class="op">:</span>total_prize] <span class="op">=</span> (</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    (df_clean.ganhadores_6_acertos <span class="op">.*</span> df_clean.rateio_6_acertos) <span class="op">.+</span> </span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    (df_clean.ganhadores_5_acertos <span class="op">.*</span> df_clean.rateio_5_acertos) <span class="op">.+</span> </span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    (df_clean.ganhadores_4_acertos <span class="op">.*</span> df_clean.rateio_4_acertos)</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Dividimos o total pago pelo número de bilhetes Nj calculado no item (b) [cite: 56]</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>df_clean[!, <span class="op">:</span>expected_prize] <span class="op">=</span> df_clean.total_prize <span class="op">./</span> df_clean.n_tickets</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualizando o prêmio esperado médio</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a><span class="fu">println</span>(<span class="st">"Média do prêmio esperado por real apostado: "</span>, <span class="fu">mean</span>(df_clean.expected_prize))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Média do prêmio esperado por real apostado: 0.9129613481870189</code></pre>
+</div>
+</div>
+</section>
+<section id="d-return-of-buying-a-ticket" class="level3">
+<h3 class="anchored" data-anchor-id="d-return-of-buying-a-ticket">(d) Return of buying a ticket</h3>
+<div id="effc5773" class="cell" data-execution_count="7">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Return Ratio: E[Yj] / pj (item d)</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>df_clean[!, <span class="op">:</span>return_ratio] <span class="op">=</span> df_clean.expected_prize <span class="op">./</span> df_clean.preco</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="fu">println</span>(<span class="st">"Média do retorno esperado (amostra limpa): "</span>, <span class="fu">mean</span>(df_clean.return_ratio))</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Verificando se em algum sorteio o retorno foi maior que 1 (lucrativo)</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="co">#sorteios_lucrativos = filter(row -&gt; row.return_ratio &gt; 1, df_clean)</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="co">#println("Número de sorteios com retorno esperado &gt; 1: ", nrow(sorteios_lucrativos))</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Média do retorno esperado (amostra limpa): 0.2571308530606728</code></pre>
+</div>
+</div>
+</section>
+<section id="e" class="level3">
+<h3 class="anchored" data-anchor-id="e">(e)</h3>
 </section>
 </section>
 </section>

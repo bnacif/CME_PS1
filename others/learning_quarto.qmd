@@ -55,3 +55,12 @@ We start by noting that...
 ::: {.callout-important}
 **Solution**
 :::
+
+
+----------------------------------------------
+inside a codeblock
+#| output: FALSE (ommits the cell output)
+#| echo: FALSE (ommits the cell code)
+
+
+
