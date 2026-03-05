@@ -1,18 +1,18 @@
 ---
-title: "Problem Set 1"
+title: "CME Problem Set 1"
 date: last-modified
 date-format: long
 author: Breno Nacif
 format:
-  pdf: default
   html:
     code-fold: true
+    code-overflow: wrap
 execute:
   warning: false
 engine: julia
 ---
 
-We begin defining
+We begin by declaring the packages we need to run the code and activating the command that controls the version of these packages. 
 
 ```{julia}
 #| output: FALSE
@@ -28,21 +28,20 @@ Pkg.add([
     "ShiftedArrays",
     "GLM",
     "StatsModels",
-    "Statistics"
+    "Statistics",
+    "Plots"
 ])
 ```
 
 # Managing data 
 
-Then we proceed to loading the raw data from Mega-Sena's website. It contains information on each draw, including revenue colleccted, prize values, and the number of winners across the different prize tiers.
+Then we proceed to loading the data from Mega-Sena's website. It contains information on each draw, including revenue colleccted, prize values, and the number of winners across the different prize tiers.
 
 ```{julia}
 # Loading data
-
 using XLSX, DataFrames
 
 df_raw = DataFrame(XLSX.readtable("data/raw/Mega-Sena.xlsx", "MEGA SENA"));
-
 ```
 
 We then clean the dataset by standardizing column names, adjusting the date format and removing currency symbols from monetary values so they are recognized as numeric values - this allows the calculations we do after. 
@@ -94,13 +93,13 @@ end
 ### (a)
 **What is the relationship between the prize value announced and the revenue collected? What is the elasticity?**
 
-Now we start the analysis. To estimate the relationship between the announced prize and the total revenue collected, we regress the log of total revenue on the log of the announced prize. In order to do that, we consider the prize variable lagged in one period, since the prize value announced is located in the previous row reative to its draw. We also restrict the sample to draws from June 2009 onwards, since there is no positive revenue information before that.
+Now we start the analysis. To estimate the relationship between the announced prize and the total revenue collected, we regress the log of total revenue on the log of the announced prize. In order to do that, we consider the prize variable lagged in one period, since the prize value announced is located in the previous row relative to its draw. We also restrict the sample to draws from June 2009 onwards, since there is no positive revenue information before that.
 
 ```{julia}
-using ShiftedArrays, GLM, StatsModels
+using ShiftedArrays, GLM, StatsModels;
 
 # lag prize
-df[!, :prize_ann] = lag(df.prize) 
+df[!, :prize_ann] = lag(df.prize);
 
 # filter for positive values of prize
 df = filter(row -> 
@@ -109,33 +108,34 @@ df = filter(row ->
     !ismissing(row.prize_ann) && 
     row.prize_ann > 0, 
     df
-)
+);
 
 # regression
-df[!, :log_revenue] = log.(df.revenue)
-df[!, :log_prize] = log.(df.prize_ann)
+df[!, :log_revenue] = log.(df.revenue);
+df[!, :log_prize] = log.(df.prize_ann);
 
-modelo = lm(@formula(log_revenue ~ log_prize), df)
-println(modelo)
+reg = lm(@formula(log_revenue ~ log_prize), df);  # intercept is added by default
+
+println(coeftable(reg))
+
+println("The elasticity between the prize announced and the revenue collected is: ", round(coef(reg)[2], digits=3))
 ```
 
-*Mostrar tabela de resultados da regressao.*
 
-Regression coefficient is 0.4, i.e., the prize elasticity of the revenue collected is 0.4. This means that a 1% increase in the announced prize implies an increase of 0.4% in the total revenue collected.
+
+Regression coefficient is 0.4, i.e., the prize elasticity of the revenue is 0.4. This means that a 1% increase in the announced prize implies an increase of 0.4% in the total revenue collected.
 
 ### (b)
 **Estimating the number of players**
 
-We estimate the number of tickets sold in each draw by dividing total revenue by the tickets price. 
-
-For each game $j$, we estimate the number of participants ($N_j$) using the formula:
+We estimate the number of tickets sold in each draw by dividing total revenue by the ticket price. For each game $j$, the number of participants ($N_j$) is:
 $$
 N_j = \frac{revenue}{price}
 $$
 
-Note that we assume that all individuals choose the cheapest option. This a fairly strong assumption given that players can choose among several options of entering the lottery game. Still, this gives us a rather good aproximation to start with. 
+Note that we assume all individuals choose the cheapest option and buy only one ticket. This is a fairly strong assumption given that players can choose among several options to participate on the lottery. Still, this gives us a rather good approximation to start with.
 
-Besides, since the ticket price has changed several times over the years, we define a function that returns the correct historical price for each draw date and apply it to the dataset.
+Besides, since the ticket price has changed several times over the years, we define a function that returns the correct historical price for each draw date and apply it to the dataset. The source of the data is detailed in `others/price_changes`.
 
 ```{julia}
 function get_ticket_price(data::Date)
@@ -159,12 +159,23 @@ df[!, :preco] = get_ticket_price.(df.data_do_sorteio)
 
 # N_j = revenue / price
 df[!, :n_tickets] = df.revenue ./ df.preco
-
-last(select(df, :data_do_sorteio, :revenue, :preco, :n_tickets), 5)
 ```
 
-*printar uma media de N ao longo do tempo? histogram?*
 
+
+```{julia}
+using Plots, DataFrames
+
+# raw series
+plot(df.data_do_sorteio, df.n_tickets,
+    xlabel = "Date",
+    ylabel = "N_j",
+    legend = false)
+
+# wo mega da virada
+
+
+```
 ### (c)
 **Expected prize for each draw.**
 
@@ -188,7 +199,7 @@ df[!, :total_prize] = (
 # dividing by N_j
 df[!, :expected_prize] = df.total_prize ./ df.n_tickets
 
-println("The expected prize for eaach draw is: ", mean(df.expected_prize))
+println("The expected prize for each draw is: ", mean(df.expected_prize))
 ```
 
 

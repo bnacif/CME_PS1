@@ -6,6 +6,8 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Breno Nacif">
+<meta name="dcterms.date" content="2026-03-05">
 
 <title>Problem Set 1</title>
 <style>
@@ -19,6 +21,41 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -34,7 +71,7 @@ ul.task-list li input[type="checkbox"] {
 <link href="pset_files/libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="pset_files/libs/bootstrap/bootstrap.min.js"></script>
 <link href="pset_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="pset_files/libs/bootstrap/bootstrap-9e3ffae467580fdb927a41352e75a2e0.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="pset_files/libs/bootstrap/bootstrap-0df8dfdce555b5e457e6102d33c50900.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script src="https://cdn.jsdelivr.net/npm/requirejs@2.3.6/require.min.js" integrity="sha384-c9c+LnTbwQ3aujuU7ULEPVvgLs+Fn6fJUvIGTsuu1ZcCf11fiEubah0ttpca4ntM sha384-6V1/AdqZRWk1KAlWbKBlGhN7VG4iE/yAZcO6NZPMF8od0vukrvr0tg4qY6NSrItx" crossorigin="anonymous"></script>
 
 <script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
@@ -86,7 +123,19 @@ window.Quarto = {
 
 <div class="quarto-title-meta">
 
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Breno Nacif </p>
+          </div>
+  </div>
     
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">March 5, 2026</p>
+    </div>
+  </div>
   
     
   </div>
@@ -96,64 +145,156 @@ window.Quarto = {
 </header>
 
 
-<section id="computational-methods-in-economics" class="level1">
-<h1>Computational Methods in Economics</h1>
-<section id="problem-set-1" class="level3">
-<h3 class="anchored" data-anchor-id="problem-set-1">Problem Set 1</h3>
-<p>Breno Nacif</p>
-<p>February, 2026</p>
-<p><em>Descrever ações</em></p>
-</section>
-</section>
+<p>We begin by declaring the packages we need to run the code and activating the command that controls the version of these packages.</p>
+<div id="2" class="cell" data-execution_count="1">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Pkg</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="bu">Pkg</span>.<span class="fu">activate</span>(<span class="st">"@__DIR__"</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cd</span>(<span class="fu">joinpath</span>(<span class="pp">@__DIR__</span>, <span class="st">".."</span>))</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="bu">Pkg</span>.<span class="fu">add</span>([</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"XLSX"</span>,</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"DataFrames"</span>,</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Dates"</span>,</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">"ShiftedArrays"</span>,</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">"GLM"</span>,</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    <span class="st">"StatsModels"</span>,</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Statistics"</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
 <section id="managing-data" class="level1">
 <h1>Managing data</h1>
+<p>Then we proceed to loading the data from Mega-Sena’s website. It contains information on each draw, including revenue colleccted, prize values, and the number of winners across the different prize tiers.</p>
 <div id="4" class="cell" data-execution_count="1">
-<div class="cell-output cell-output-stdout">
-<div class="ansi-escaped-output">
-<pre><span class="ansi-green-fg ansi-bold">Precompiling</span> packages...
-   2015.2 ms<span class="ansi-green-fg">  ✓ </span>QuartoNotebookWorkerTablesExt<span class="ansi-bright-black-fg"> (serial)</span>
-  1 dependency successfully precompiled in 2 seconds
-<span class="ansi-green-fg ansi-bold">Precompiling</span> packages...
-   1587.3 ms<span class="ansi-green-fg">  ✓ </span>QuartoNotebookWorkerLaTeXStringsExt<span class="ansi-bright-black-fg"> (serial)</span>
-  1 dependency successfully precompiled in 2 seconds
-</pre>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Loading data</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">XLSX</span>, <span class="bu">DataFrames</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>df_raw <span class="op">=</span> <span class="fu">DataFrame</span>(XLSX.<span class="fu">readtable</span>(<span class="st">"data/raw/Mega-Sena.xlsx"</span>, <span class="st">"MEGA SENA"</span>));</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 </div>
+<p>We then clean the dataset by standardizing column names, adjusting the date format and removing currency symbols from monetary values so they are recognized as numeric values - this allows the calculations we do after.</p>
+<div id="6" class="cell" data-execution_count="1">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Data cleaning</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Dates</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> <span class="fu">copy</span>(df_raw) <span class="co"># copy so that raw stays raw</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co"># changing column names</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="fu">rename!</span>(</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>   df, <span class="fu">names</span>(df) <span class="op">.=&gt;</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>   <span class="fu">Symbol</span>.(<span class="fu">lowercase</span>.(<span class="fu">replace</span>.(<span class="fu">names</span>(df), <span class="st">" "</span> <span class="op">=&gt;</span> <span class="st">"_"</span>)))</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="fu">rename!</span>(df,</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>   <span class="op">:</span>arrecadação_total <span class="op">=&gt;</span> <span class="op">:</span>revenue,</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>   <span class="op">:</span>estimativa_prêmio <span class="op">=&gt;</span> <span class="op">:</span>prize,</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>   <span class="op">:</span>acumulado_sorteio_especial_mega_da_virada <span class="op">=&gt;</span> <span class="op">:</span>acum_mv)</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="co"># changing date fomat</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>formato <span class="op">=</span> <span class="fu">DateFormat</span>(<span class="st">"dd/mm/yyyy"</span>)</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>df[!, <span class="op">:</span>data_do_sorteio] <span class="op">=</span> <span class="fu">Date</span>.(df[!, <span class="op">:</span>data_do_sorteio], formato)</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a><span class="co"># cleaning monetary values</span></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">clean_currency</span>(val)</span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="fu">ismissing</span>(val) <span class="op">||</span> val <span class="op">==</span> <span class="st">""</span></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="fl">0.0</span></span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elseif</span> val isa <span class="dt">Number</span></span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="fu">Float64</span>(val)</span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span></span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>        <span class="co"># remove R$, thousands separator and substitute ',' for '.'</span></span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>        s <span class="op">=</span> <span class="fu">replace</span>(<span class="fu">string</span>(val), <span class="st">r"R</span><span class="sc">\$</span><span class="ch">|</span><span class="sc">\.</span><span class="st">"</span> <span class="op">=&gt;</span> <span class="st">""</span>, <span class="st">","</span> <span class="op">=&gt;</span> <span class="st">"."</span>)</span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="fu">parse</span>(<span class="dt">Float64</span>, s)</span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>    <span class="cf">end</span></span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>colunas_financeiras <span class="op">=</span> [<span class="op">:</span>rateio_6_acertos, <span class="op">:</span>rateio_5_acertos, <span class="op">:</span>rateio_4_acertos, </span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>                       <span class="op">:</span>acumulado_6_acertos, <span class="op">:</span>revenue, <span class="op">:</span>prize, <span class="op">:</span>acum_mv]</span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> col <span class="kw">in</span> colunas_financeiras</span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a>    df[!, col] <span class="op">=</span> <span class="fu">clean_currency</span>.(df[!, col])</span>
+<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 </div>
-</div>
-<p>Agora vamos começar os exercícios</p>
 <section id="items" class="level2">
 <h2 class="anchored" data-anchor-id="items">Items</h2>
 <section id="a" class="level3">
 <h3 class="anchored" data-anchor-id="a">(a)</h3>
 <p><strong>What is the relationship between the prize value announced and the revenue collected? What is the elasticity?</strong></p>
+<p>Now we start the analysis. To estimate the relationship between the announced prize and the total revenue collected, we regress the log of total revenue on the log of the announced prize. In order to do that, we consider the prize variable lagged in one period, since the prize value announced is located in the previous row relative to its draw. We also restrict the sample to draws from June 2009 onwards, since there is no positive revenue information before that.</p>
 <div id="8" class="cell" data-execution_count="1">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">ShiftedArrays</span>, <span class="bu">GLM</span>, <span class="bu">StatsModels;</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co"># lag prize</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>df[!, <span class="op">:</span>prize_ann] <span class="op">=</span> <span class="fu">lag</span>(df.prize);</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co"># filter for positive values of prize</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> <span class="fu">filter</span>(row <span class="op">-&gt;</span> </span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    row.data_do_sorteio <span class="op">&gt;=</span> <span class="fu">Date</span>(<span class="fl">2009</span>, <span class="fl">6</span>, <span class="fl">1</span>) <span class="op">&amp;&amp;</span> <span class="co"># missing data before</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    row.revenue <span class="op">&gt;</span> <span class="fl">0</span> <span class="op">&amp;&amp;</span> </span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    !<span class="fu">ismissing</span>(row.prize_ann) <span class="op">&amp;&amp;</span> </span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    row.prize_ann <span class="op">&gt;</span> <span class="fl">0</span>, </span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    df</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>);</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a><span class="co"># regression</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>df[!, <span class="op">:</span>log_revenue] <span class="op">=</span> <span class="fu">log</span>.(df.revenue);</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>df[!, <span class="op">:</span>log_prize] <span class="op">=</span> <span class="fu">log</span>.(df.prize_ann);</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>reg <span class="op">=</span> <span class="fu">lm</span>(<span class="pp">@formula</span>(log_revenue <span class="op">~</span> log_prize), df);  <span class="co"># intercept is added by default</span></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a><span class="fu">coeftable</span>(reg)</span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a><span class="fu">println</span>(<span class="st">"The elasticity between the prize announced and the revenue collected is: "</span>, <span class="fu">round</span>(<span class="fu">coef</span>(reg)[<span class="fl">2</span>], digits<span class="op">=</span><span class="fl">3</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 <div class="cell-output cell-output-stdout">
-<pre><code>StatsModels.TableRegressionModel{LinearModel{GLM.LmResp{Vector{Float64}}, GLM.DensePredChol{Float64, LinearAlgebra.CholeskyPivoted{Float64, Matrix{Float64}, Vector{Int64}}}}, Matrix{Float64}}(GLM.LinearModel{GLM.LmResp{Vector{Float64}}, GLM.DensePredChol{Float64, LinearAlgebra.CholeskyPivoted{Float64, Matrix{Float64}, Vector{Int64}}}}:
-
-Coefficients:
-─────────────────────────────────────────────────────────────────
-        Coef.  Std. Error       t  Pr(&gt;|t|)  Lower 95%  Upper 95%
-─────────────────────────────────────────────────────────────────
-x1  10.9402    0.0974996   112.21    &lt;1e-99  10.749     11.1314
-x2   0.401451  0.00584697   68.66    &lt;1e-99   0.389984   0.412919
-─────────────────────────────────────────────────────────────────
-, ModelFrame{@NamedTuple{log_arrec::Vector{Float64}, log_prize::Vector{Float64}}, LinearModel}(log_arrec ~ 1 + log_prize, StatsModels.Schema with 2 entries:
-  log_arrec =&gt; log_arrec
-  log_prize =&gt; log_prize
-, (log_arrec = [16.777228303633425, 17.013934573062944, 17.231914145360268, 17.253985756964013, 17.458564917429786, 17.573753299119517, 17.924365356507188, 18.30575088505082, 16.82073613963562, 17.05968292034055  …  18.49907681050238, 18.543206010768323, 17.8574327675998, 17.801945023774646, 17.85775507941382, 18.054599066527498, 18.113666850157887, 18.388389508813876, 18.349682556018852, 18.412967311774842], log_prize = [15.201804919084164, 16.300417207752275, 16.588099280204055, 16.811242831518264, 16.951004773893423, 17.14771506813948, 17.622173047734595, 17.822843743196746, 14.508657738524219, 15.201804919084164  …  18.683045008419857, 18.785323857540273, 17.50439001207821, 17.665658159674333, 17.822843743196746, 17.942644943009366, 18.09217667698033, 18.469470908121796, 18.56910074907064, 18.683045008419857]), LinearModel), ModelMatrix{Matrix{Float64}}([1.0 15.201804919084164; 1.0 16.300417207752275; … ; 1.0 18.56910074907064; 1.0 18.683045008419857], [1, 2]))</code></pre>
+<pre><code>The elasticity between the prize announced and the revenue collected is: 0.401</code></pre>
 </div>
 </div>
-<p><em>Mostrar tabela de resultados da regressao.</em></p>
 <p>Regression coefficient is 0.4, i.e., the prize elasticity of the revenue collected is 0.4. This means that a 1% increase in the announced prize implies an increase of 0.4% in the total revenue collected.</p>
 </section>
 <section id="b" class="level3">
 <h3 class="anchored" data-anchor-id="b">(b)</h3>
-<p><strong>Estimating the number of players (single tickets)</strong></p>
-<p><em>Escrever sobre a fonte detalhadamente</em></p>
+<p><strong>Estimating the number of players</strong></p>
+<p>We estimate the number of tickets sold in each draw by dividing total revenue by the tickets price.</p>
 <p>For each game <span class="math inline">\(j\)</span>, we estimate the number of participants (<span class="math inline">\(N_j\)</span>) using the formula: <span class="math display">\[
 N_j = \frac{revenue}{price}
-\]</span> Note that we assume that all individuals choose the simplest and cheapest option. This a fairly strong assumption given that players can choose among several options of entering the lottery game. Still, this gives us a rather good aproximation to start with.</p>
+\]</span></p>
+<p>Note that we assume that all individuals choose the cheapest option. This a fairly strong assumption given that players can choose among several options of entering the lottery game. Still, this gives us a rather good aproximation to start with.</p>
+<p>Besides, since the ticket price has changed several times over the years, we define a function that returns the correct historical price for each draw date and apply it to the dataset.</p>
 <div id="10" class="cell" data-execution_count="1">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">get_ticket_price</span>(data<span class="op">::</span><span class="dt">Date</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> data <span class="op">&lt;</span> <span class="fu">Date</span>(<span class="fl">2014</span>, <span class="fl">5</span>, <span class="fl">11</span>)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="fl">2.00</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elseif</span> data <span class="op">&lt;</span> <span class="fu">Date</span>(<span class="fl">2015</span>, <span class="fl">5</span>, <span class="fl">24</span>)</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="fl">2.50</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elseif</span> data <span class="op">&lt;</span> <span class="fu">Date</span>(<span class="fl">2019</span>, <span class="fl">11</span>, <span class="fl">10</span>)</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="fl">3.50</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elseif</span> data <span class="op">&lt;</span> <span class="fu">Date</span>(<span class="fl">2023</span>, <span class="fl">4</span>, <span class="fl">30</span>)</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="fl">4.50</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elseif</span> data <span class="op">&lt;</span> <span class="fu">Date</span>(<span class="fl">2025</span>, <span class="fl">7</span>, <span class="fl">10</span>)</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="fl">5.00</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="fl">6.00</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">end</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a><span class="co"># adding column of prices</span></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>df[!, <span class="op">:</span>preco] <span class="op">=</span> <span class="fu">get_ticket_price</span>.(df.data_do_sorteio)</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a><span class="co"># N_j = revenue / price</span></span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>df[!, <span class="op">:</span>n_tickets] <span class="op">=</span> df.revenue <span class="op">./</span> df.preco</span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a><span class="fu">last</span>(<span class="fu">select</span>(df, <span class="op">:</span>data_do_sorteio, <span class="op">:</span>revenue, <span class="op">:</span>preco, <span class="op">:</span>n_tickets), <span class="fl">5</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <div><div style="float: left;"><span>5×4 DataFrame</span></div><div style="clear: both;"></div></div><div class="data-frame" style="overflow-x: scroll;">
 <table class="data-frame caption-top table table-sm table-striped small">
@@ -161,7 +302,7 @@ N_j = \frac{revenue}{price}
 <tr class="columnLabelRow header">
 <th class="stubheadLabel" data-quarto-table-cell-role="th" style="text-align: right; font-weight: bold;">Row</th>
 <th style="text-align: left;" data-quarto-table-cell-role="th">data_do_sorteio</th>
-<th style="text-align: left;" data-quarto-table-cell-role="th">arrec</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">revenue</th>
 <th style="text-align: left;" data-quarto-table-cell-role="th">preco</th>
 <th style="text-align: left;" data-quarto-table-cell-role="th">n_tickets</th>
 </tr>
@@ -214,31 +355,56 @@ N_j = \frac{revenue}{price}
 </div>
 </div>
 </div>
+<p><em>printar uma media de N ao longo do tempo? histogram?</em></p>
 </section>
 <section id="c" class="level3">
 <h3 class="anchored" data-anchor-id="c">(c)</h3>
-<p><strong>Now we want to compute your expected prize for each draw.</strong></p>
-<p><em>descrever formula e explicar lógica</em></p>
+<p><strong>Expected prize for each draw.</strong></p>
+<p>The expected prize per ticket is computed as the toal amount paid out across all prize tiers - 4, 5, 6 correct numbers - divided by the total number of tickets sold in that draw. In math terms,</p>
 <p><span class="math display">\[
 \mathbb{E}[Y_j] = \frac{G6_j}{N_j}Y^{6}_{j} + \frac{G5_j}{N_j}Y^{5}_{j} + \frac{G4_j}{N_j}Y^{4}_{j}
 \]</span></p>
 <p>where <span class="math inline">\(G\theta_j\)</span> is the number of individuals who won one of the prizes, depending on the number <span class="math inline">\(\theta \in \{4,5,6\}\)</span> of numbers they got right, and <span class="math inline">\(Y_j^{\theta}\)</span> is the corresponding prize paid to each winner.</p>
 <div id="12" class="cell" data-execution_count="1">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Statistics</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co"># G6/Nj * Y6 + G5/Nj * Y5 + G4/Nj * Y4</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>df[!, <span class="op">:</span>total_prize] <span class="op">=</span> (</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    (df.ganhadores_6_acertos <span class="op">.*</span> df.rateio_6_acertos) <span class="op">.+</span> </span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    (df.ganhadores_5_acertos <span class="op">.*</span> df.rateio_5_acertos) <span class="op">.+</span> </span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    (df.ganhadores_4_acertos <span class="op">.*</span> df.rateio_4_acertos)</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="co"># dividing by N_j</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>df[!, <span class="op">:</span>expected_prize] <span class="op">=</span> df.total_prize <span class="op">./</span> df.n_tickets</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a><span class="fu">println</span>(<span class="st">"The expected prize for each draw is: "</span>, <span class="fu">mean</span>(df.expected_prize))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 <div class="cell-output cell-output-stdout">
-<pre><code>Média do prêmio esperado por real apostado: 0.9129613481870189</code></pre>
+<pre><code>The expected prize for each draw is: 0.9129613481870189</code></pre>
 </div>
 </div>
 </section>
-<section id="d-return-of-buying-a-ticket" class="level3">
-<h3 class="anchored" data-anchor-id="d-return-of-buying-a-ticket">(d) Return of buying a ticket</h3>
+<section id="d" class="level3">
+<h3 class="anchored" data-anchor-id="d">(d)</h3>
+<p><strong>Expected return of buying a ticket</strong></p>
+<p>Finally, we compute the expected return. To do so, we divide the expected prize by the ticket price.</p>
 <div id="14" class="cell" data-execution_count="1">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R = E[Y_j]/p_j</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>df[!, <span class="op">:</span>return_ratio] <span class="op">=</span> df.expected_prize <span class="op">./</span> df.preco</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="fu">println</span>(<span class="st">"The expected return for each draw is: "</span>, <span class="fu">mean</span>(df.return_ratio))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 <div class="cell-output cell-output-stdout">
-<pre><code>Média do retorno esperado (amostra limpa): 0.2571308530606728</code></pre>
+<pre><code>The expected return for each draw is: 0.2571308530606728</code></pre>
 </div>
 </div>
 </section>
 <section id="e" class="level3">
 <h3 class="anchored" data-anchor-id="e">(e)</h3>
+<p><strong>Analyzing the average return for a given prize announcement</strong></p>
 </section>
 </section>
 </section>
