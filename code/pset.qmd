@@ -41,7 +41,7 @@ Then we proceed to loading the raw data from Mega-Sena's website. It contains in
 
 using XLSX, DataFrames
 
-df = DataFrame(XLSX.readtable("data/raw/Mega-Sena.xlsx", "MEGA SENA"));
+df_raw = DataFrame(XLSX.readtable("data/raw/Mega-Sena.xlsx", "MEGA SENA"));
 
 ```
 
@@ -50,6 +50,8 @@ We then clean the dataset by standardizing column names, adjusting the date form
 ```{julia}
 # Data cleaning
 using Dates
+
+df = copy(df_raw) # copy so that raw stays raw
 
 # changing column names
 rename!(
@@ -101,7 +103,7 @@ using ShiftedArrays, GLM, StatsModels
 df[!, :prize_ann] = lag(df.prize) 
 
 # filter for positive values of prize
-df_clean = filter(row -> 
+df = filter(row -> 
     row.data_do_sorteio >= Date(2009, 6, 1) && # missing data before
     row.revenue > 0 && 
     !ismissing(row.prize_ann) && 
@@ -110,10 +112,10 @@ df_clean = filter(row ->
 )
 
 # regression
-df_clean[!, :log_revenue] = log.(df_clean.revenue)
-df_clean[!, :log_prize] = log.(df_clean.prize_ann)
+df[!, :log_revenue] = log.(df.revenue)
+df[!, :log_prize] = log.(df.prize_ann)
 
-modelo = lm(@formula(log_revenue ~ log_prize), df_clean)
+modelo = lm(@formula(log_revenue ~ log_prize), df)
 println(modelo)
 ```
 
@@ -153,12 +155,12 @@ function get_ticket_price(data::Date)
 end
 
 # adding column of prices
-df_clean[!, :preco] = get_ticket_price.(df_clean.data_do_sorteio)
+df[!, :preco] = get_ticket_price.(df.data_do_sorteio)
 
 # N_j = revenue / price
-df_clean[!, :n_tickets] = df_clean.revenue ./ df_clean.preco
+df[!, :n_tickets] = df.revenue ./ df.preco
 
-last(select(df_clean, :data_do_sorteio, :revenue, :preco, :n_tickets), 5)
+last(select(df, :data_do_sorteio, :revenue, :preco, :n_tickets), 5)
 ```
 
 *printar uma media de N ao longo do tempo? histogram?*
@@ -177,16 +179,16 @@ where $G\theta_j$ is the number of individuals who won one of the prizes, depend
 ```{julia}
 using Statistics
 # G6/Nj * Y6 + G5/Nj * Y5 + G4/Nj * Y4
-df_clean[!, :total_prize] = (
-    (df_clean.ganhadores_6_acertos .* df_clean.rateio_6_acertos) .+ 
-    (df_clean.ganhadores_5_acertos .* df_clean.rateio_5_acertos) .+ 
-    (df_clean.ganhadores_4_acertos .* df_clean.rateio_4_acertos)
+df[!, :total_prize] = (
+    (df.ganhadores_6_acertos .* df.rateio_6_acertos) .+ 
+    (df.ganhadores_5_acertos .* df.rateio_5_acertos) .+ 
+    (df.ganhadores_4_acertos .* df.rateio_4_acertos)
 )
 
 # dividing by N_j
-df_clean[!, :expected_prize] = df_clean.total_prize ./ df_clean.n_tickets
+df[!, :expected_prize] = df.total_prize ./ df.n_tickets
 
-println("The expected prize for eaach draw is: ", mean(df_clean.expected_prize))
+println("The expected prize for eaach draw is: ", mean(df.expected_prize))
 ```
 
 
@@ -196,8 +198,8 @@ println("The expected prize for eaach draw is: ", mean(df_clean.expected_prize))
 Finally, we compute the expected return. To do so, we divide the expected prize by the ticket price.
 ```{julia}
 # R = E[Y_j]/p_j
-df_clean[!, :return_ratio] = df_clean.expected_prize ./ df_clean.preco
-println("The expected return for each draw is: ", mean(df_clean.return_ratio))
+df[!, :return_ratio] = df.expected_prize ./ df.preco
+println("The expected return for each draw is: ", mean(df.return_ratio))
 
 ```
 
