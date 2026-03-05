@@ -1,10 +1,18 @@
-# Computational Methods in Economics
-### Problem Set 1
-Breno Nacif
+---
+title: "Problem Set 1"
+date: last-modified
+date-format: long
+author: Breno Nacif
+format:
+  pdf: default
+  html:
+    code-fold: true
+execute:
+  warning: false
+engine: julia
+---
 
-February, 2026
-
-*Descrever ações* 
+We begin defining
 
 ```{julia}
 #| output: FALSE
@@ -26,6 +34,8 @@ Pkg.add([
 
 # Managing data 
 
+Then we proceed to loading the raw data from Mega-Sena's website. It contains information on each draw, including revenue colleccted, prize values, and the number of winners across the different prize tiers.
+
 ```{julia}
 # Loading data
 
@@ -35,76 +45,75 @@ df = DataFrame(XLSX.readtable("data/raw/Mega-Sena.xlsx", "MEGA SENA"));
 
 ```
 
+We then clean the dataset by standardizing column names, adjusting the date format and removing currency symbols from monetary values so they are recognized as numeric values - this allows the calculations we do after. 
 
 ```{julia}
 # Data cleaning
 using Dates
 
-# 1. Padronização de nomes de colunas
+# changing column names
 rename!(
    df, names(df) .=>
    Symbol.(lowercase.(replace.(names(df), " " => "_")))
 )
 
 rename!(df,
-   :arrecadação_total => :arrec,
-   :estimativa_prêmio => :premio,
+   :arrecadação_total => :revenue,
+   :estimativa_prêmio => :prize,
    :acumulado_sorteio_especial_mega_da_virada => :acum_mv)
 
-# 2. Conversão de Datas
+# changing date fomat
 formato = DateFormat("dd/mm/yyyy")
 df[!, :data_do_sorteio] = Date.(df[!, :data_do_sorteio], formato)
 
-# 3. Função robusta para limpeza de valores monetários
+# cleaning monetary values
 function clean_currency(val)
     if ismissing(val) || val == ""
         return 0.0
-    elseif val isa Number  #isa: built-in function/operator to determine whether a value is  of a given type
+    elseif val isa Number
         return Float64(val)
     else
-        # Remove "R$" e pontos de milhar, depois troca a vírgula decimal por ponto
+        # remove R$, thousands separator and substitute ',' for '.'
         s = replace(string(val), r"R\$|\." => "", "," => ".")
         return parse(Float64, s)
     end
 end
 
-# 4. Identificar todas as colunas que precisam de limpeza financeira
-# Com base no dataset, são as colunas de rateio, acumulados, arrecadação e prêmio
 colunas_financeiras = [:rateio_6_acertos, :rateio_5_acertos, :rateio_4_acertos, 
-                       :acumulado_6_acertos, :arrec, :premio, :acum_mv]
+                       :acumulado_6_acertos, :revenue, :prize, :acum_mv]
 
-# Aplicar a função em todas as colunas da lista de uma vez
 for col in colunas_financeiras
     df[!, col] = clean_currency.(df[!, col])
 end
 ```
 
-Agora vamos começar os exercícios
 
 ## Items
 ### (a)
 **What is the relationship between the prize value announced and the revenue collected? What is the elasticity?**
+
+Now we start the analysis. To estimate the relationship between the announced prize and the total revenue collected, we regress the log of total revenue on the log of the announced prize. In order to do that, we consider the prize variable lagged in one period, since the prize value announced is located in the previous row reative to its draw. We also restrict the sample to draws from June 2009 onwards, since there is no positive revenue information before that.
+
 ```{julia}
-### (a)
 using ShiftedArrays, GLM, StatsModels
 
-# Criando o lag do prêmio (anunciado no sorteio anterior)
-df[!, :prize_ann] = lag(df.premio) 
+# lag prize
+df[!, :prize_ann] = lag(df.prize) 
 
-# Filtrar: Desde Junho/2009 e Arrecadação > 0
+# filter for positive values of prize
 df_clean = filter(row -> 
     row.data_do_sorteio >= Date(2009, 6, 1) && # missing data before
-    row.arrec > 0 && 
+    row.revenue > 0 && 
     !ismissing(row.prize_ann) && 
     row.prize_ann > 0, 
     df
 )
 
-# Cálculo de log e regressão
-df_clean[!, :log_arrec] = log.(df_clean.arrec)
+# regression
+df_clean[!, :log_revenue] = log.(df_clean.revenue)
 df_clean[!, :log_prize] = log.(df_clean.prize_ann)
 
-modelo = lm(@formula(log_arrec ~ log_prize), df_clean)
+modelo = lm(@formula(log_revenue ~ log_prize), df_clean)
 println(modelo)
 ```
 
@@ -113,20 +122,20 @@ println(modelo)
 Regression coefficient is 0.4, i.e., the prize elasticity of the revenue collected is 0.4. This means that a 1% increase in the announced prize implies an increase of 0.4% in the total revenue collected.
 
 ### (b)
-**Estimating the number of players (single tickets)**
+**Estimating the number of players**
 
-*Escrever sobre a fonte detalhadamente*
+We estimate the number of tickets sold in each draw by dividing total revenue by the tickets price. 
 
 For each game $j$, we estimate the number of participants ($N_j$) using the formula:
 $$
 N_j = \frac{revenue}{price}
 $$
-Note that we assume that all individuals choose the simplest and cheapest option. This a fairly strong assumption given that players can choose among several options of entering the lottery game. Still, this gives us a rather good aproximation to start with. 
+
+Note that we assume that all individuals choose the cheapest option. This a fairly strong assumption given that players can choose among several options of entering the lottery game. Still, this gives us a rather good aproximation to start with. 
+
+Besides, since the ticket price has changed several times over the years, we define a function that returns the correct historical price for each draw date and apply it to the dataset.
+
 ```{julia}
-
-# Item (b): Estimating the number of players (single tickets)
-
-# 1. Definindo a função de preço histórico
 function get_ticket_price(data::Date)
     if data < Date(2014, 5, 11)
         return 2.00
@@ -143,21 +152,21 @@ function get_ticket_price(data::Date)
     end
 end
 
-### (b)
-# A função get_ticket_price permanece a mesma
+# adding column of prices
 df_clean[!, :preco] = get_ticket_price.(df_clean.data_do_sorteio)
 
-# N_j = Arrecadação / Preço
-df_clean[!, :n_tickets] = df_clean.arrec ./ df_clean.preco
+# N_j = revenue / price
+df_clean[!, :n_tickets] = df_clean.revenue ./ df_clean.preco
 
-# 4. Visualizando os resultados para os sorteios recentes
-last(select(df_clean, :data_do_sorteio, :arrec, :preco, :n_tickets), 5)
+last(select(df_clean, :data_do_sorteio, :revenue, :preco, :n_tickets), 5)
 ```
 
-### (c)
-**Now we want to compute your expected prize for each draw.**
+*printar uma media de N ao longo do tempo? histogram?*
 
-*descrever formula e explicar lógica*
+### (c)
+**Expected prize for each draw.**
+
+The expected prize per ticket is computed as the toal amount paid out across all prize tiers - 4, 5, 6 correct numbers - divided by the total number of tickets sold in that draw. In math terms,
 
 $$
 \mathbb{E}[Y_j] = \frac{G6_j}{N_j}Y^{6}_{j} + \frac{G5_j}{N_j}Y^{5}_{j} + \frac{G4_j}{N_j}Y^{4}_{j}
@@ -166,10 +175,7 @@ $$
 where $G\theta_j$ is the number of individuals who won one of the prizes, depending on the number $\theta \in \{4,5,6\}$ of numbers they got right, and $Y_j^{\theta}$ is the corresponding prize paid to each winner.
 
 ```{julia}
-### (c) Calculating Expected Prize E[Yj]
-
 using Statistics
-# Calculando os componentes da fórmula: Probabilidade * Valor do Prêmio
 # G6/Nj * Y6 + G5/Nj * Y5 + G4/Nj * Y4
 df_clean[!, :total_prize] = (
     (df_clean.ganhadores_6_acertos .* df_clean.rateio_6_acertos) .+ 
@@ -177,26 +183,24 @@ df_clean[!, :total_prize] = (
     (df_clean.ganhadores_4_acertos .* df_clean.rateio_4_acertos)
 )
 
-# Dividimos o total pago pelo número de bilhetes Nj calculado no item (b) [cite: 56]
+# dividing by N_j
 df_clean[!, :expected_prize] = df_clean.total_prize ./ df_clean.n_tickets
 
-# Visualizando o prêmio esperado médio
-println("Média do prêmio esperado por real apostado: ", mean(df_clean.expected_prize))
+println("The expected prize for eaach draw is: ", mean(df_clean.expected_prize))
 ```
 
 
-### (d) Return of buying a ticket
+### (d) 
+**Expected return of buying a ticket**
 
+Finally, we compute the expected return. To do so, we divide the expected prize by the ticket price.
 ```{julia}
-
-# 3. Return Ratio: E[Yj] / pj (item d)
+# R = E[Y_j]/p_j
 df_clean[!, :return_ratio] = df_clean.expected_prize ./ df_clean.preco
-println("Média do retorno esperado (amostra limpa): ", mean(df_clean.return_ratio))
+println("The expected return for each draw is: ", mean(df_clean.return_ratio))
 
-# Verificando se em algum sorteio o retorno foi maior que 1 (lucrativo)
-#sorteios_lucrativos = filter(row -> row.return_ratio > 1, df_clean)
-#println("Número de sorteios com retorno esperado > 1: ", nrow(sorteios_lucrativos))
 ```
 
 
 ### (e)
+**Analyzing the average return for a given prize announcement**
