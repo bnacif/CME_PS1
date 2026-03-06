@@ -116,17 +116,14 @@ df[!, :log_prize] = log.(df.prize_ann);
 
 reg = lm(@formula(log_revenue ~ log_prize), df);  # intercept is added by default
 
-println(coeftable(reg))
-
 println("The elasticity between the prize announced and the revenue collected is: ", round(coef(reg)[2], digits=3))
 ```
 
+The prize elasticity of the revenue, given by the regression coefficient, is 0.4. This means that a 1% increase in the announced prize implies an increase of 0.4% in the total revenue collected.
 
-
-Regression coefficient is 0.4, i.e., the prize elasticity of the revenue is 0.4. This means that a 1% increase in the announced prize implies an increase of 0.4% in the total revenue collected.
 
 ### (b)
-**Estimating the number of players**
+**Estimating the number of players.**
 
 We estimate the number of tickets sold in each draw by dividing total revenue by the ticket price. For each game $j$, the number of participants ($N_j$) is:
 $$
@@ -155,31 +152,51 @@ function get_ticket_price(data::Date)
 end
 
 # adding column of prices
-df[!, :preco] = get_ticket_price.(df.data_do_sorteio)
+df[!, :preco] = get_ticket_price.(df.data_do_sorteio);
 
 # N_j = revenue / price
-df[!, :n_tickets] = df.revenue ./ df.preco
+df[!, :n_tickets] = df.revenue ./ df.preco;
 ```
 
-
+Here we can observe how the number of participants grew after 2009. Attention to the scale.
 
 ```{julia}
-using Plots, DataFrames
+using Plots, DataFrames, Statistics
 
-# raw series
-plot(df.data_do_sorteio, df.n_tickets,
-    xlabel = "Date",
+years = minimum(year.(df.data_do_sorteio)):3:maximum(year.(df.data_do_sorteio))
+xtick_dates = Date.(years, 1, 1)
+xtick_labels = string.(years)
+
+# without mega da virada
+df_less_mv = filter(row -> !(month(row.data_do_sorteio) == 12 && day(row.data_do_sorteio) == 31) &&
+                            !(month(row.data_do_sorteio) == 1  && day(row.data_do_sorteio) == 1), df)
+
+# plots
+p1 = plot(df.data_do_sorteio, df.n_tickets,
     ylabel = "N_j",
-    legend = false)
+    title = "All draws",
+    legend = false,
+    xticks = (xtick_dates, xtick_labels),
+    linecolor = :steelblue)
 
-# wo mega da virada
+p2 = plot(df_less_mv.data_do_sorteio, df_less_mv.n_tickets,
+    ylabel = "N_j",
+    title = "w/o Mega da Virada",
+    legend = false,
+    ymirror = true,
+    xticks = (xtick_dates, xtick_labels),
+    linecolor = :steelblue)
 
-
+plot(p1, p2, layout = (1, 2), size = (900, 400))
 ```
+
+In the first graph, note the clear seasonal pattern. The number of tickets sold spikes around the end of each year, when Caixa offers the special *Mega da Virada* - usually the highest prize of the year - and falls right after. When we exclude these observations, participation is considerably less volatile. The average number of tickets (or players, following our assumptions) during this period is `{julia} round(mean(df_less_mv.n_tickets) / 1e6, digits = 2)` millions.
+
+
 ### (c)
 **Expected prize for each draw.**
 
-The expected prize per ticket is computed as the toal amount paid out across all prize tiers - 4, 5, 6 correct numbers - divided by the total number of tickets sold in that draw. In math terms,
+The expected prize per ticket is computed as the total amount paid out across all prize tiers - 4, 5, 6 correct numbers - divided by the total number of tickets sold in that draw. In math terms,
 
 $$
 \mathbb{E}[Y_j] = \frac{G6_j}{N_j}Y^{6}_{j} + \frac{G5_j}{N_j}Y^{5}_{j} + \frac{G4_j}{N_j}Y^{4}_{j}
@@ -204,7 +221,7 @@ println("The expected prize for each draw is: ", mean(df.expected_prize))
 
 
 ### (d) 
-**Expected return of buying a ticket**
+**Expected return of buying a ticket.**
 
 Finally, we compute the expected return. To do so, we divide the expected prize by the ticket price.
 ```{julia}
@@ -216,4 +233,4 @@ println("The expected return for each draw is: ", mean(df.return_ratio))
 
 
 ### (e)
-**Analyzing the average return for a given prize announcement**
+**Analyzing the average return for a given prize announcement.**
