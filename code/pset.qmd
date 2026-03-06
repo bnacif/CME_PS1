@@ -114,7 +114,7 @@ df = filter(row ->
 df[!, :log_revenue] = log.(df.revenue);
 df[!, :log_prize] = log.(df.prize_ann);
 
-reg = lm(@formula(log_revenue ~ log_prize), df);  # intercept is added by default
+reg = lm(@formula(log_revenue ~ log_prize), df);  # intercept added by default
 
 println("The elasticity between the prize announced and the revenue collected is: ", round(coef(reg)[2], digits=3))
 ```
@@ -127,8 +127,10 @@ The prize elasticity of the revenue, given by the regression coefficient, is 0.4
 
 We estimate the number of tickets sold in each draw by dividing total revenue by the ticket price. For each game $j$, the number of participants ($N_j$) is:
 $$
-N_j = \frac{revenue}{price}
+N_j = \frac{rev_j}{p_j}
 $$
+
+where $rev_j$ is the revenue and $p_j$ is the ticket price.
 
 Note that we assume all individuals choose the cheapest option and buy only one ticket. This is a fairly strong assumption given that players can choose among several options to participate on the lottery. Still, this gives us a rather good approximation to start with.
 
@@ -206,6 +208,7 @@ where $G\theta_j$ is the number of individuals who won one of the prizes, depend
 
 ```{julia}
 using Statistics
+
 # G6/Nj * Y6 + G5/Nj * Y5 + G4/Nj * Y4
 df[!, :total_prize] = (
     (df.ganhadores_6_acertos .* df.rateio_6_acertos) .+ 
@@ -214,23 +217,79 @@ df[!, :total_prize] = (
 )
 
 # dividing by N_j
-df[!, :expected_prize] = df.total_prize ./ df.n_tickets
+df[!, :exp_prize] = df.total_prize ./ df.n_tickets;
 
-println("The expected prize for each draw is: ", mean(df.expected_prize))
+println("The expected prize across draws is: ", mean(df.exp_prize))
 ```
 
 
 ### (d) 
 **Expected return of buying a ticket.**
 
-Finally, we compute the expected return. To do so, we divide the expected prize by the ticket price.
+Finally, we compute the expected return. To do so, we divide the expected prize by the ticket price:
+$$
+R_j = \frac{\mathbb{E}[Y_j]}{p_j}
+$$
+
 ```{julia}
 # R = E[Y_j]/p_j
-df[!, :return_ratio] = df.expected_prize ./ df.preco
-println("The expected return for each draw is: ", mean(df.return_ratio))
+df[!, :exp_return] = df.exp_prize ./ df.preco;
 
+println("The expected return across draws is: ", mean(df.exp_return))
 ```
 
 
 ### (e)
 **Analyzing the average return for a given prize announcement.**
+
+The final step is to evaluate the average return for a given prize announcement:
+$$ 
+\mathbb{E}[R_j | P_j] 
+$$
+
+The unconditional expected return considering all games after 2009 is `{julia} round(mean(df.exp_return), digits = 2)`. This means that, on average, each R$1 invested in a ticket returns only 26 cents. Since this only an average result, let us now evaluate the dispersion of expected returns given the announced prize. We remove outliers to highlight the underlying relationship.
+
+```{julia}
+using Plots
+
+sort!(df, :prize_ann)
+
+# Gráfico de dispersão do retorno em função do prêmio anunciado
+plot(df.prize_ann ./ 1e6, df.exp_return, 
+     seriestype = :scatter, 
+     alpha = 0.5, 
+     xlabel = "Prêmio Anunciado (Milhões de R\$)", 
+     ylabel = "Retorno Esperado (E[Yj]/pj)",
+     label = "Sorteios",
+     title = "Retorno Esperado vs. Prêmio Anunciado")
+
+# Adicionando uma linha horizontal em 1.0 (ponto de equilíbrio)
+hline!([1.0], color = :red, linestyle = :dash, label = "Breakeven (Ratio = 1)")
+
+```
+
+
+sem outliers
+
+```{julia}
+Q1 = quantile(df.exp_return, 0.7)
+Q3 = quantile(df.exp_return, 0.9)
+IQR = Q3 - Q1
+
+df_no_outliers = filter(row -> row.exp_return >= Q1 - 1.5 * IQR && row.exp_return <= Q3 + 1.5 * IQR, df)
+
+plot(df_no_outliers.prize_ann ./ 1e6, df_no_outliers.exp_return,
+     xlims = (0, 250),
+     seriestype = :scatter,
+     alpha = 0.5,
+     xlabel = "Prêmio Anunciado (Milhões de R\$)",
+     ylabel = "Retorno Esperado (E[Yj]/pj)",
+     label = "Sorteios",
+     title = "Retorno Esperado vs. Prêmio Anunciado (sem outliers)")
+
+#hline!([1.0], color = :red, linestyle = :dash, label = "Breakeven (Ratio = 1)")
+
+```
+
+
+sem mv
