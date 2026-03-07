@@ -252,34 +252,47 @@ The unconditional expected return considering all games after 2009 is `{julia} r
 Since this is only an average result, let us now evaluate the dispersion of expected returns given the announced prize. In the graph below, each dot is a draw. We restrict the range of prize values to highlight the underlying relationship.
 
 ```{julia}
-using Plots, GLM
+using Plots, GLM, StatsModels
 
 sort!(df, :prize_ann)
 
-# simple OLS
-reg_scatter = lm(@formula(exp_return ~ prize_ann), df)
+# OLS
+# lin
+reg_lin  = lm(@formula(exp_return ~ prize_ann), df)
+# quad
+df.prize_ann_sq = df.prize_ann .^ 2
+reg_quad = lm(@formula(exp_return ~ prize_ann + prize_ann_sq), df)
 
-# predicted values for the regression line
+# fit
 x_range = range(0, 250e6, length=200)
-y_pred = coef(reg_scatter)[1] .+ coef(reg_scatter)[2] .* x_range
+df_pred = DataFrame(
+    prize_ann = x_range,
+    prize_ann_sq = x_range .^ 2)
 
-# scatter plot
+y_pred_lin  = predict(reg_lin, df_pred)
+y_pred_quad = predict(reg_quad, df_pred)
+
+# plot
 plot(df.prize_ann ./ 1e6, df.exp_return,
-     xlims = (0, 250),
-     seriestype = :scatter,
-     alpha = 0.5,
-     xlabel = "Announced prize (millions of R\$)",
-     ylabel = "Expected return",
-     label = false)
-hline!([1.0], color = :red, linestyle = :dash, label = false)
+    xlims = (0, 250),
+    seriestype = :scatter,
+    alpha = 0.5,
+    xlabel = "Announced prize (millions of R\$)",
+    ylabel = "Expected return",
+    label = false)
+hline!([1.0], color = :gray, linestyle = :dash, label = false)
 
-# OLS line
-plot!(x_range ./ 1e6, y_pred, color = :blue, linewidth = 2, label = "OLS")
+# OLS lines
+plot!(x_range ./ 1e6, y_pred_lin, linewidth = 2, label = "linear")
+plot!(x_range ./ 1e6, y_pred_quad, linewidth = 2, label = "quadratic")
+
+# save
+#savefig("output/scatter_prize_return.png")
 ```
 
-We observe two different sets of draws. While many draws align in some type of quadratic relation, others present very low expected returns regardless of the prize. Note that an OLS specification provides a poor fit. 
+We observe two different sets of draws. While many draws align in some type of quadratic relation, others present very low expected returns regardless of the prize. Besides, only a few draws exhibit return greater than one. Once we remove outliers, the quadratic relationship and the advantageous returns vanish (check the graph below). 
 
-However, once we remove outliers, the quadratic relationship vanishes.
+The result is that both linear and quadratic OLS specifications provide poor fit. 
 
 ```{julia}
 Q1 = quantile(df.exp_return, 0.25)
@@ -289,55 +302,38 @@ IQR = Q3 - Q1
 df_no_outliers = filter(row -> row.exp_return >= Q1 - 1.5 * IQR && row.exp_return <= Q3 + 1.5 * IQR, df)
 
 plot(df_no_outliers.prize_ann ./ 1e6, df_no_outliers.exp_return,
-     xlims = (0, 250),
-     seriestype = :scatter,
-     alpha = 0.5,
-     label = false,
-     xlabel = "Announced prize (millions of R\$)",
-     ylabel = "Expected return")
-#hline!([1.0], linestyle = :dash, color = :red, label = false)
+    xlims = (0, 250),
+    seriestype = :scatter,
+    alpha = 0.5,
+    label = false,
+    xlabel = "Announced prize (millions of R\$)",
+    ylabel = "Expected return")
 
+#savefig("output/scatter_prize_return_less_outlier.png")
 ```
 
-
-Therefore, we propose the following model.
-
-
+Therefore, we can use a simpler strategu. Below, we group the draws according to prize ranges, and calculate the average return for each bin. The resulting graph given an idea of the relationship between the variables.
 
 ```{julia}
-using GLM, StatsModels
+using DataFrames, Statistics, Plots
 
-# dummy for mega da virada
-df[!, :mv_dummy] = Int.((month.(df.data_do_sorteio) .== 12 .& day.(df.data_do_sorteio) .== 31) .|
-                        (month.(df.data_do_sorteio) .== 1  .& day.(df.data_do_sorteio) .== 1))
+# bin strategy
+bin_size = 25e6 
+df[!, :prize_bin] = floor.(df.prize_ann ./ bin_size) .* bin_size
 
-# time trend
-df[!, :trend] = 1:nrow(df)
+df_bins = combine(groupby(df, :prize_bin), 
+    :exp_return => mean => :avg_return)
 
-# log expected return
-df[!, :log_return] = log.(df.exp_return)
+plot(df_bins.prize_bin ./ 1e6, df_bins.avg_return,
+    seriestype = :bar,
+    xlabel = "Announced prize (millions of R\$)",
+    ylabel = "Average Expected Return",
+    label = false,
+    alpha = 1)
 
-# log prize (already have log_prize)
-# ticket price already in :preco
-
-# (1) baseline: simple log-log
-reg1 = lm(@formula(log_return ~ log_prize), df)
-
-# (2) adding controls
-reg2 = lm(@formula(log_return ~ log_prize + preco + trend + mv_dummy), df)
-
-# (3) quadratic term to capture non-linearity
-df[!, :log_prize_sq] = df.log_prize .^ 2
-reg3 = lm(@formula(log_return ~ log_prize + log_prize_sq + preco + trend + mv_dummy), df)
-
-# results
-println("=== Baseline ===")
-println(coeftable(reg1))
-
-println("=== With controls ===")
-println(coeftable(reg2))
-
-println("=== Quadratic ===")
-println(coeftable(reg3))
-
+#savefig("output/bin_analysis.png")
 ```
+
+Overall, it seems that the function of expected return given the announced prize is somewhat concave. At first, as the prize increases, return increases, since total revenue expands faster than the number of players. However, once the number of participants is "high enough", individual expected gains fall considerably.
+
+What is clear is that there is no range of announced prize presenting an average return above one.
