@@ -15,4 +15,6 @@ To do so, I use two primary data soucres. I describe them below.
 
 The code includes a function that deals with joining both datasets.
 
+Besides the data aspects, the `output` folder contains the set of graph produced by the code. You must uncomment the `savefig` lines to store the plots in this folder.
+
 **AI use**: I have used AI for learning purposes only. Specifically, I used Gemini and Claude to improve my knowledge of Julia programming, along with web research.
