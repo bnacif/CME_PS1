@@ -4,7 +4,6 @@ date: last-modified
 date-format: long
 author: Breno Nacif
 format:
-  pdf: default
   html:
     code-fold: true
     code-overflow: wrap
