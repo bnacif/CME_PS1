@@ -12,3 +12,6 @@ if area > 40
 else
     println("É um retângulo pequeno")
 end
+
+
+# ! faz mudar a propria variavel, sem criar copia
