@@ -1,0 +1,1 @@
+You must download and store "Mega-Sena.xlsx" under the `data/raw` folder to properly run the code.
