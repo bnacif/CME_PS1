@@ -7,8 +7,6 @@ format:
   html:
     code-fold: true
     code-overflow: wrap
-  pdf:
-    default-image-extension: png
 execute:
   warning: false
   fig-format: png
