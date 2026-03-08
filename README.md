@@ -2,7 +2,7 @@ The goal of this project is to estimate the expected return of buying the cheape
 To do so, I use two primary data soucres. I describe them below.
 
     1. The first source is the file "Mega-Sena.xlsx", published by Caixa Econômica Federal on the website 
-    "https://loterias.caixa.gov.br/Paginas/Mega-Sena.aspx" under the "Downloads" section. It details the 
+    "<https://loterias.caixa.gov.br/Paginas/Mega-Sena.aspx>" under the "Downloads" section. It details the 
     results of each draw of the lottery since 1996. Mainly, it reports the announced prize for each draw,
     the number of winners and the total revenue collected. To properly run the code, you must download the
     file and save it under `data/raw`.
